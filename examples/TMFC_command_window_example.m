@@ -127,7 +127,7 @@ contrast_number = [3,4];            % Calculate contrasts #3 and #4
 
 % FIR window length in [s]
 tmfc.FIR.window = 24;
-% Nmber of FIR time bins
+% Number of FIR time bins
 tmfc.FIR.bins = 24;
 
 % Run FIR task regression
@@ -205,10 +205,16 @@ contrast_number = [3,4];            % Calculate contrasts #3 and #4
 
 %% gPPI-FIR (gPPI model with psychological regressors defined by FIR functions)
 
+% Define FIR parameters for gPPI-FIR
+tmfc.ROI_set(ROI_set_number).gPPI_FIR.window = 24;   % FIR window length in [s]
+tmfc.ROI_set(ROI_set_number).gPPI_FIR.bins = 24;     % Number of FIR time bins
+
 % gPPI-FIR calculation
 [sub_check,contrasts] = tmfc_gPPI_FIR(tmfc,ROI_set_number,start_sub);
 
 % Update contrasts info
+% The tmfc_gPPI_FIR function creates default contrasts for each
+% condition of interest (i.e., Condition > Baseline)
 tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR = contrasts;
 
 % Define new contrasts:
