@@ -324,7 +324,50 @@ Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_proje
 * **ROI_to_ROI**  - containes **gPPI functional connectivity matrices** (asymmetrical and symmetrical, symmetrization is carried out by averaging the upper and lower diagonal elements);
 * **Seed_to_voxel** - containes **voxel-by-voxel gPPI images** calculated for each seed ROI.
 
-### gPPI-FIR analysis
+## gPPI-FIR analysis
+
+To remove co-activations with arbitrary shape of HRF function, we can combine FIR task regression with gPPI regression. The difference between classic gPPI GLM and gPPI-FIR GLM is that the
+latter uses finite impulse response (FIR) functions (instead of canonical HRF function) to model activations for conditions of interst and conditions of no interest. The FIR model allows to model activations with any possible hemodynamic response shape.
+
+Click **"gPPI-FIR"** button to perform gPPI-FIR analysis. 
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\gPPI-FIR"** folder with three subfolders (GLM_batches, ROI_to_ROI, Seed_to_voxel).
+
+### gPPI-FIR results
+
+To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
+```matlab
+% Select TMFC project path
+tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
+
+% Load gPPI-FIR matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','symmetrical',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+contrast = 1;                       % TaskA_vs_TaskB effect
+alpha = 0.001/2;                    % alpha = 0.001 thredhold corrected for two-sided comparison
+correction = 'FDR';                 % False Discovery Rate (FDR) correction (Benjamini–Hochberg procedure)
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot gPPI-FIR results
+figure(2);
+sgtitle('gPPI-FIR results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
+```
+
+Results for edge-wise inference with FDR-correction ("TaskA > TaskB" contrast):
+
+<p align="center">
+<img src = "illustrations/07_gPPI_FIR_results.png">
+</p>
 
 ## Change paths
 
