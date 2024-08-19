@@ -319,6 +319,13 @@ Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_proje
 
 Click **"gPPI"** button to perform gPPI analysis. 
 
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\gPPI"** folder with three subfolders:
+* **GLM_batches** - containes SPM12 batches for gPPI GLMs;
+* **ROI_to_ROI**  - containes **gPPI functional connectivity matrices** (asymmetrical and symmetrical, symmetrization is carried out by averaging the upper and lower diagonal elements);
+* **Seed_to_voxel** - containes **voxel-by-voxel gPPI images** calculated for each seed ROI.
+
+### gPPI-FIR analysis
+
 ## Change paths
 
 ## Example of TMFC usage from command line
