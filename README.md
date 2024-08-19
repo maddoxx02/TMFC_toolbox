@@ -203,11 +203,24 @@ Click **ROI_set** button a third time and select "100_ROIs" set:
 
 To perfrom beta-series correlation (BSC) analysis, we first need to calculate parameter estimates (betas) for individual trials using LSS regression.
 
-Click **LSS GLM** button and select conditions of interest (individual betas will be calculated only for selected conditions):
+Click **LSS GLM** button and select conditions of interest (individual betas will be calculated only for the selected conditions):
 
 <p align="center">
 <img src = "illustrations/03_Select_conditions_of_interest.PNG">
 </p>
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\LSS_regression"** folder with subfolders for each subject. Subjects' subfolders will contain **trial-wise beta images** and **SPM12 batches for individual trial GLMs**. 
+
+### Beta-series correlaction based on LSS regression (BSC-LSS)
+
+To perform BSC-LSS analysis for selected ROI set, click **BSC LSS** button.
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_set_name\BSC_LSS"** folder with three subfolders:
+* **Beta_series** - containes beta series extracted for the selected ROI set (beta parameters are averaged across voxels for each ROI mask);
+* **ROI_to_ROI**  - containes **BSC-LSS functional connectivity matrices**;
+* **Seed_to_voxel** - containes **voxel-by-voxel BSC-LSS images (*.nii files)** calculated for each seed ROI.
+
+**NOTE:** You don't need to recalculare LSS regression to perform the BSC-LSS analysis for a different ROI set. Just select a different ROI set by clicking the **ROI set** button and then click the **BSC-LSS** button.
 
 ## Change paths
 
