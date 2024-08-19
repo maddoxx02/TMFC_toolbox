@@ -114,7 +114,7 @@ Click OK
 ### Overview of TMFC functions 
 
 <p align="center">
-<img src = "illustrations/00_TMFC_toolbox_functions.PNG">
+<img src = "illustrations/00_TMFC_toolbox_functions.png">
 </p>
 
 ### Folder structure
@@ -122,10 +122,10 @@ Click OK
 TMFC toolbox has the following folder structure:
 
 <p align="center">
-<img src = "illustrations/00_TMFC_toolbox_folder_structure.PNG">
+<img src = "illustrations/00_TMFC_toolbox_folder_structure.png">
 </p>
 
-These folders and files will be created in selected project path after performing corresponding analyses. To select TMFC project path and subjects click **Subjects** button.
+These folders and files will be created in the selected project path after performing corresponding analyses. To select TMFC project path and subjects click **Subjects** button.
 
 ### Select subjects
 
