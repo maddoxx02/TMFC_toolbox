@@ -68,20 +68,29 @@ for i = 1:size(matrices,3)
 end
 
 switch correction
-    case 'uncorr'
+    case 'Uncorrected (Parametric)'
         thresholded = double(pval<alpha);
         thresholded(1:1+N_ROI:end) = 0;
+        figure();
+        imagesc(tval);
 
-    case 'FDR'
+    case 'FDR (Parametric)'
         [~,p] = ttest(a_matix_masked);
         [alpha_FDR] = FDR(p,alpha);
         thresholded = double(pval<alpha_FDR);
         thresholded(1:1+N_ROI:end) = 0;
 
-    case 'Bonf'
+    case 'Uncorrected (Non-Parametric)'
         alpha_Bonf = alpha/(N_ROI*(N_ROI-1)/2);
         thresholded = double(pval<alpha_Bonf);
         thresholded(1:1+N_ROI:end) = 0;
+    
+    otherwise
+        thresholded = [];
+        pval = [];
+        tval = [];
+        conval = [];
+        warning('Work in progress. Please wait for future updates');
 end
 end
 

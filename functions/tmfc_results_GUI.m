@@ -52,7 +52,7 @@ RES_RUN = uicontrol(RES_GUI, 'Style', 'pushbutton', 'String', 'Run','Units', 'no
 % Callback actions
 set(RES_POP_1, 'callback', @test_type);
 set(RES_THRES_POP, 'callback', @threshold_type);
-set(RES_L0_SEL, 'callback', @test);
+set(RES_L0_SEL, 'callback', @action_subjects_S0);
 set(RES_L1_SEL, 'callback', @test);
 set(RES_L2_SEL, 'callback', @test);
 set(RES_L0_REM, 'callback', @action_remove_0);
@@ -87,10 +87,10 @@ function action_subjects_S0(~,~)
         % If (.mat) files have been selected, perform multiple variable and dimension checks
         if ~isempty(M0)          
                             
-            if multi_check(M0) ~= 1   % Check if (.mat) file consists of multiple variables
+            if multi_check(M0) == 0   % Check if (.mat) file consists of multiple variables
 
                 % Continue if the selected files do not contain multiple variables
-                for i = 1:size(M0,1);
+                for i = 1:size(M0,1)
                     M(i).m = struct2array(load(M0{i,:}));
                 end
     
@@ -109,8 +109,8 @@ function action_subjects_S0(~,~)
 
 
                 
-            else
-                % Raise warning if file has MULTIPLE VARIABLES within
+            elseif multi_check(M0) == 1
+                % Raise warning if file has MULTIPLE VARIABLES within 
                 M0 = {};
                 warning('Selected *.mat file(s) consist(s) of multiple variables, please select *.mat files each containing only one variable');
             end 
@@ -118,7 +118,7 @@ function action_subjects_S0(~,~)
         
         
         % Updating the GUI 
-        if isempty(M0)
+        if isempty(M0{1})
             % If all files selection was rejected during checks, reset GUI
             disp('No (.mat) file(s) selected');
             set(RES_L0_CTR, 'String', '0 ROIs x 0 subjects');
@@ -196,7 +196,7 @@ end
 function test(~,~)
     
     tt = gco();
-    assignin('base', 'tt', tt);
+    %assignin('base', 'tt', tt);
     
     %guidata(handles.TMFC_GUI, handles);
     
@@ -921,14 +921,15 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on');
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'off'); %ch
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on');               
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'off');  %ch
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'off');%ch
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
-
+        warning('Work in progress. Please wait for future updates');
         % Reset Variables 
         M0 = {};
         M1 = {};
@@ -958,6 +959,7 @@ function test_type(~,~)
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
 
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
         %  Reset Varaibles
         M0 = {};
         M1 = {};
@@ -979,13 +981,17 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on');
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'off'); %ch
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on');               
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'off');   %ch          
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
+        
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'off');%ch
+        
+        warning('Work in progress. Please wait for future updates');
         
         % Reset Variables
         M0 = {};
@@ -1000,6 +1006,7 @@ function test_type(~,~)
         set(RES_lst_1,'Value', []);
         set(RES_lst_2,'String', M2);
         set(RES_lst_2,'Value', []);
+        clear matrices 
 
     end    
 end
@@ -1157,8 +1164,8 @@ function run(~,~)
                 TP_1 = TP_check();
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                    disp('\n continue with computation');
-                    tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
+                    tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),RES_THRES_POP.String{RES_THRES_POP.Value});
+                    %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),str2double(RES_PERM_VAL.String),str2double(RES_THRES_VAL_UNI.String),RES_THRES_POP.String{RES_THRES_POP.Value});
                 end
             end
@@ -1252,8 +1259,7 @@ function flag = CA_controller(~,~)
             if length(G2) >=2
                 warning('Number of Contrast values cannot exceed ONE, Please re-enter contrast value for computation');
             else
-                fprintf('\nContrast values [%d] accepted for computation\n',G2(1,1));
-                disp('test');
+                fprintf('Contrast values [%d] accepted for computation\n',G2(1,1));
                 % CONTD with Alpha verification
                  if isnan(G3)
                     warning('Please enter Alpha value for computation');
@@ -1261,7 +1267,7 @@ function flag = CA_controller(~,~)
                     if (G3 > 1) || (G3 < 0)
                         warning('Please re-enter Alpha value between (0.0, 1.0]');
                     else
-                        fprintf('\nAlpha value of [%d] is accepted for computation', G3);
+                        fprintf('Alpha value of [%d] is accepted for computation\n', G3);
                         flag = 1;
                     end
                  end
@@ -1326,21 +1332,27 @@ function flag = multi_check(D)
     j = 1;                  % Counter the number of files present
     flag = 0;               % Binary Flag to indicate status of multiple vars
     
-    % Loop to iterate through all possible (.mat) files 
-    for i = 1:main_size(1)
-        
-        var = who('-file', D{i,:});   % Listing the variable into temp Workspace - Cell Datatype
-        %var = who('-file', D(i,:));  % Listing the variable into temp Workspace - Standalone Datatype
-        A = size(var);
-        
-        % If there exists files with multiple variables within, then disp
-        if A(1) > 1
-            fprintf('MULTIPLE VARIABLES in the file :%s \n', D{i,:})
-            holder(j) = i;
-            j = j+1;
-            flag = 1;
-        end        
+    if ~isempty(D{1})
+        %disp('test');
+        % Loop to iterate through all possible (.mat) files 
+        for i = 1:main_size(1)
+
+            var = who('-file', D{i,:});   % Listing the variable into temp Workspace - Cell Datatype
+            %var = who('-file', D(i,:));  % Listing the variable into temp Workspace - Standalone Datatype
+            A = size(var);
+
+            % If there exists files with multiple variables within, then disp
+            if A(1) > 1
+                fprintf('MULTIPLE VARIABLES in the file :%s \n', D{i,:})
+                holder(j) = i;
+                j = j+1;
+                flag = 1;
+            end        
+        end
+    else
+        flag = -1;
     end
+    
 end
 %%
 % Function to check selected files are of same dimension or not
