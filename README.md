@@ -240,7 +240,7 @@ Click OK to calculate the new contrast. Each time you need to calculate a new co
 
 ### Seed-to-voxel results
 
-You can use SPM12 software to perform voxel-wise statistical inference. Click "Specify 2nd-level" button, select "One-sample t-test" and specify 20 contrast files for the "Cond_A_vs_Cond_B" contrast and selected seed ROI from the **...\Seed_to_voxel\ROI_name** subfolder.
+You can use the SPM12 software to perform voxel-wise statistical inference. Click "Specify 2nd-level" button, select "One-sample t-test" and specify 20 contrast files for the "Cond_A_vs_Cond_B" contrast and the selected seed ROI from the **...\Seed_to_voxel\ROI_name** subfolder.
 
 ### ROI-to-ROI results
 
@@ -280,7 +280,7 @@ set(findall(gcf,'-property','FontSize'),'FontSize',16)
 Results for edge-wise inference with FDR-correction (p-FDR<0.001):
 
 <p align="center">
-<img src = "illustrations/04_BSC_LSS_results.PNG">
+<img src = "illustrations/04_BSC_LSS_results.png">
 </p>
 
 ## BSC-LSS after FIR task regression
