@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/dcf85153-b26b-4587-88f1-c6dd3f01afde)# Task-Modulated Functional Connectivity (TMFC) toolbox
+# Task-Modulated Functional Connectivity (TMFC) toolbox
 ![GitHub License](https://img.shields.io/github/license/Masharipov/TMFC_toolbox)
 
 <img src = "illustrations/TMFC_toolbox.png">
