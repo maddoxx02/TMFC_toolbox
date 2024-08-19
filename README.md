@@ -8,13 +8,13 @@
 **TMFC** is a MATLAB toolbox for SPM12 for task-modulated functional connectivity analysis.
 
 TMFC toolbox implements:
- - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**)
- - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure
- - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices)
- - Finite impulse response (**FIR**) task regression to remove co-activations
- - Graphical user interface (**GUI**) and command line interface (**CLI**)
- - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks)
- - Parralel computations
+ - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**);
+ - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure;
+ - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices);
+ - Finite impulse response (**FIR**) task regression to remove co-activations;
+ - Graphical user interface (**GUI**) and command line interface (**CLI**);
+ - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks);
+ - Parralel computations.
 
 If you use TMFC toolbox, please cite this study: <br/>
 [Masharipov et al. "Comparison of whole-brain task-modulated functional connectivity methods for fMRI task connectomics." bioRxiv (2024): 2024-01](https://doi.org/10.1101/2024.01.22.576622).
@@ -25,7 +25,7 @@ If you use TMFC toolbox, please cite this study: <br/>
 2) Add TMFC toolbox to your MATLAB path (Home --> Set path --> Add with Subfolders --> Select TMFC_toolbox folder);
 3) Enter **TMFC** in command window to open TMFC GUI <br/>
    or <br/>
-4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line
+4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line.
 
 ## Example data
 
@@ -88,7 +88,7 @@ In real datasets, the number of voxels are not equal to the number of ROIs. Howe
 
 ## Example of TMFC GUI usage
 
-### Main TMFC window
+## Main TMFC window
 
 Enter **TMFC** in command window to open TMFC GUI:
 
@@ -96,7 +96,7 @@ Enter **TMFC** in command window to open TMFC GUI:
 <img src = "illustrations/00_Main_GUI.PNG" width = 400>
 </p>
 
-### Settings
+## Settings
 
 Click **Settings** button to open settings window:
 
@@ -104,14 +104,14 @@ Click **Settings** button to open settings window:
 <img src = "illustrations/00_Settings_GUI.PNG" width = 400>
 </p>
 
-* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations)
-* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM)
-* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations) 
-* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both)
+* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations);
+* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM);
+* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations);
+* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both).
 
-Click OK
+Click OK.
 
-### Overview of TMFC functions 
+## Overview of TMFC functions 
 
 <p align="center">
 <img src = "illustrations/00_TMFC_toolbox_functions.png">
@@ -119,7 +119,7 @@ Click OK
 
 See how to use TMFC functions via command line [here](#Example-of-TMFC-usage-from-command-line).
 
-### Folder structure
+## Folder structure
 
 TMFC toolbox has the following folder structure:
 
@@ -129,7 +129,7 @@ TMFC toolbox has the following folder structure:
 
 These folders and files will be created in the selected project path after performing corresponding analyses. To select TMFC project path and subjects click **Subjects** button.
 
-### Select subjects
+## Select subjects
 
 Click **Subjects** button to open subject manager window:
 
@@ -157,7 +157,7 @@ Check selected subjects and click OK:
 
 Finally, **select a folder for the new TMFC project**.
 
-### Select ROIs
+## Select ROIs
 
 Click **ROI_set** button and define ROI set name:
 
@@ -199,7 +199,7 @@ Click **ROI_set** button a third time and select "100_ROIs" set:
 <img src = "illustrations/02_Select_ROIs_GUI_5.PNG">
 </p>
 
-### Least-squares separate (LSS) regression 
+## Least-squares separate (LSS) regression 
 
 To perfrom beta-series correlation (BSC) analysis, we first need to calculate parameter estimates (betas) for individual trials using LSS regression.
 
@@ -211,16 +211,79 @@ Click **LSS GLM** button and select conditions of interest (individual betas wil
 
 Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\LSS_regression"** folder with subfolders for each subject. Subjects' subfolders will contain **trial-wise beta images** and **SPM12 batches for individual trial GLMs**. 
 
-### Beta-series correlaction based on LSS regression (BSC-LSS)
+## Beta-series correlaction based on LSS regression (BSC-LSS)
 
 To perform BSC-LSS analysis for selected ROI set, click **BSC LSS** button.
 
 Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_set_name\BSC_LSS"** folder with three subfolders:
 * **Beta_series** - containes beta series extracted for the selected ROI set (beta parameters are averaged across voxels for each ROI mask);
-* **ROI_to_ROI**  - containes **BSC-LSS functional connectivity matrices**;
-* **Seed_to_voxel** - containes **voxel-by-voxel BSC-LSS images (*.nii files)** calculated for each seed ROI.
+* **ROI_to_ROI**  - containes **BSC-LSS functional connectivity matrices** (Person's r converted to Fisher's Z);
+* **Seed_to_voxel** - containes **voxel-by-voxel BSC-LSS images** (*.nii files containing Fisher's Z values) calculated for each seed ROI.
 
 **NOTE:** You don't need to recalculare LSS regression to perform the BSC-LSS analysis for a different ROI set. Just select a different ROI set by clicking the **ROI set** button and then click the **BSC-LSS** button.
+
+## BSC-LSS results
+
+By default, TMFC calculates contrasts for each condition of interest (Condition > Baseline). To calculate the functional connectivity difference between conditions (i.e., "Condition A > Condition B") click the **BSC LSS** button once again:
+
+<p align="center">
+<img src = "illustrations/04_BSC_LSS_contrast_GUI_1.PNG">
+</p>
+
+Define a new contrast by pressing "Add new" button, enter contrast title ("TaskA_vs_TaskB") and specify contrast weights ([1 -1]), and click OK:
+
+<p align="center">
+<img src = "illustrations/04_BSC_LSS_contrast_GUI_2.PNG">
+</p>
+
+Click OK to calculate the new contrast. Each time you need to calculate a new contrast, click the **BSC LSS** button. Contrast files will be stored in **ROI_to_ROI** and **Seed_to_voxel** subfolders.
+
+### Seed-to-voxel results
+
+You can use the SPM12 software to perform voxel-wise statistical inference. Click "Specify 2nd-level" button, select "One-sample t-test" and specify 20 contrast files for the "Cond_A_vs_Cond_B" contrast and the selected seed ROI from the **...\Seed_to_voxel\ROI_name** subfolder.
+
+### ROI-to-ROI results
+
+In future releases, we will add a GUI window to perform ROI-to-ROI statistical inference. It will implement edge-wise FDR and Bonferroni correction, as well as network-based statistics (NBS) and threshold-free cluster enhancement (TFCE) with network-level FWE correction.
+
+TMFC matrices (*.mat files) can be analysed in any MATLAB toolbox for ROI-to-ROI statistical inference. For example, you can use the network-based statistics (NBS) toolbox (https://www.nitrc.org/projects/nbs/). 
+
+To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
+
+```matlab
+% Select TMFC project path
+tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
+
+% Load BSC-LSS matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'BSC_LSS','ROI_to_ROI',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+contrast = 1;                       % TaskA_vs_TaskB effect
+alpha = 0.001/2;                    % alpha = 0.001 thredhold corrected for two-sided comparison
+correction = 'FDR';                 % False Discovery Rate (FDR) correction (Benjamini–Hochberg procedure)
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot BSC-LSS results
+figure(1);
+sgtitle('BSC-LSS results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
+```
+
+Results for edge-wise inference with FDR-correction (p-FDR<0.001):
+
+<p align="center">
+<img src = "illustrations/04_BSC_LSS_results.png">
+</p>
+
+## BSC-LSS after FIR task regression
 
 ## Change paths
 
