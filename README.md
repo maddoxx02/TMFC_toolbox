@@ -117,6 +117,8 @@ Click OK
 <img src = "illustrations/00_TMFC_toolbox_functions.png">
 </p>
 
+See how to use TMFC functions via command line [here](#Example-of-TMFC-usage-from-command-line)
+
 ### Folder structure
 
 TMFC toolbox has the following folder structure:
