@@ -111,6 +111,22 @@ Click **Settings** button to open settings window:
 
 Click OK
 
+### Overview of TMFC functions 
+
+<p align="center">
+<img src = "illustrations/00_TMFC_toolbox_functions.PNG">
+</p>
+
+### Folder structure
+
+TMFC toolbox has the following folder structure:
+
+<p align="center">
+<img src = "illustrations/00_TMFC_toolbox_folder_structure.PNG">
+</p>
+
+These folders and files will be created in selected project path after performing corresponding analyses. To select TMFC project path and subjects click **Subjects** button.
+
 ### Select subjects
 
 Click **Subjects** button to open subject manager window:
