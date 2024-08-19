@@ -117,7 +117,7 @@ Click OK
 <img src = "illustrations/00_TMFC_toolbox_functions.png">
 </p>
 
-See how to use TMFC functions via command line [here](#Example-of-TMFC-usage-from-command-line)
+See how to use TMFC functions via command line [here](#Example-of-TMFC-usage-from-command-line).
 
 ### Folder structure
 
@@ -154,6 +154,8 @@ Check selected subjects and click OK:
 <p align="center">
 <img src = "illustrations/01_Select_subjects_GUI_4.PNG" width = 600>
 </p>
+
+Finally, select a folder for the new TMFC project.
 
 ### Select ROIs
 
