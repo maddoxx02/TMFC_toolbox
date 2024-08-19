@@ -8,13 +8,13 @@
 **TMFC** is a MATLAB toolbox for SPM12 for task-modulated functional connectivity analysis.
 
 TMFC toolbox implements:
- - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**)
- - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure
- - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices)
- - Finite impulse response (**FIR**) task regression to remove co-activations
- - Graphical user interface (**GUI**) and command line interface (**CLI**)
- - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks)
- - Parralel computations
+ - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**);
+ - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure;
+ - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices);
+ - Finite impulse response (**FIR**) task regression to remove co-activations;
+ - Graphical user interface (**GUI**) and command line interface (**CLI**);
+ - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks);
+ - Parralel computations.
 
 If you use TMFC toolbox, please cite this study: <br/>
 [Masharipov et al. "Comparison of whole-brain task-modulated functional connectivity methods for fMRI task connectomics." bioRxiv (2024): 2024-01](https://doi.org/10.1101/2024.01.22.576622).
@@ -25,7 +25,7 @@ If you use TMFC toolbox, please cite this study: <br/>
 2) Add TMFC toolbox to your MATLAB path (Home --> Set path --> Add with Subfolders --> Select TMFC_toolbox folder);
 3) Enter **TMFC** in command window to open TMFC GUI <br/>
    or <br/>
-4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line
+4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line.
 
 ## Example data
 
@@ -104,12 +104,12 @@ Click **Settings** button to open settings window:
 <img src = "illustrations/00_Settings_GUI.PNG" width = 400>
 </p>
 
-* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations)
-* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM)
-* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations) 
-* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both)
+* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations);
+* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM);
+* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations);
+* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both).
 
-Click OK
+Click OK.
 
 ## Overview of TMFC functions 
 
