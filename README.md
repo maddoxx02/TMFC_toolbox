@@ -155,7 +155,7 @@ Check selected subjects and click OK:
 <img src = "illustrations/01_Select_subjects_GUI_4.PNG" width = 600>
 </p>
 
-Finally, select a folder for the new TMFC project.
+Finally, **select a folder for the new TMFC project**.
 
 ### Select ROIs
 
@@ -199,7 +199,15 @@ Click **ROI_set** button a third time and select "100_ROIs" set:
 <img src = "illustrations/02_Select_ROIs_GUI_5.PNG">
 </p>
 
-### 
+### Least-squares separate (LSS) regression 
+
+To perfrom beta-series correlation (BSC) analysis, we first need to calculate parameter estimates (betas) for individual trials using LSS regression.
+
+Click **LSS GLM** button and select conditions of interest (individual betas will be calculated only for selected conditions):
+
+<p align="center">
+<img src = "illustrations/03_Select_conditions_of_interest.PNG">
+</p>
 
 ## Change paths
 
