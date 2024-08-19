@@ -56,7 +56,7 @@ clear
 data.SF  = 1;         % Scaling Factor (SF) for co-activations: SF = SD_oscill/SD_coact
 data.SNR = 1;         % Signal-to-noise ratio (SNR): SNR = SD_signal/SD_noise
 data.STP_delay = 0.2; % Short-term synaptic plasticity (STP) delay, [s]
-data.N = 30;          % Sample size (Select 30 subjects out of 100 to reduce computations)
+data.N = 20;          % Sample size (Select 20 subjects out of 100 to reduce computations)
 data.N_ROIs = 100;    % Number of ROIs
 data.dummy = 3;       % Remove first M dummy scans
 data.TR = 2;          % Repetition time (TR), [s]
@@ -80,7 +80,7 @@ cd(data.stat_path)
 
 ```
 
-This code creates *.nii files for 30 subjects (we select 30 subjects out of 100 to reduce computations).
+This code creates *.nii files for 20 subjects (we select 20 subjects out of 100 and consider high SNR = 1 to reduce the number of computations).
 
 Each *.nii file represents single time point and consists of 100 voxels. Each voxel correspons to one ROI. In this case, seed-to-voxel and ROI-to-ROI analyses are equivalent.
 
@@ -119,7 +119,7 @@ Press **Subjects** button to open subject manager window:
 <img src = "illustrations/01_Select_subjects_GUI_1.PNG" width = 500>
 </p>
 
-Press **Select subjects folder** button and select folders for 30 subjects (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\GLMs" folder):
+Press **Select subjects folder** button and select folders for 20 subjects (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\GLMs" folder):
 
 <p align="center">
 <img src = "illustrations/01_Select_subjects_GUI_2.PNG" width = 600>
@@ -164,6 +164,8 @@ TMFC toolbox creates a "TMFC_project_folder\ROI_set_name\Masked_ROIs" folder, wh
 
 ROI masks which do not contain any voxels that have data across all subjects will be removed from the TMFC analysis.
 User can also remove heavily cropped ROIs.
+
+###
 
 ## Change paths
 
