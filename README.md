@@ -98,7 +98,7 @@ Enter **TMFC** in command window to open TMFC GUI:
 
 ### Settings
 
-Press **Settings** button to open settings window:
+Click **Settings** button to open settings window:
 
 <p align="center">
 <img src = "illustrations/00_Settings_GUI.PNG" width = 400>
@@ -109,52 +109,52 @@ Press **Settings** button to open settings window:
 * Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations) 
 * Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both)
 
-Press OK
+Click OK
 
 ### Select subjects
 
-Press **Subjects** button to open subject manager window:
+Click **Subjects** button to open subject manager window:
 
 <p align="center">
-<img src = "illustrations/01_Select_subjects_GUI_1.PNG" width = 500>
+<img src = "illustrations/01_Select_subjects_GUI_1.PNG" width = 600>
 </p>
 
-Press **Select subjects folder** button and select folders for 20 subjects (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\GLMs" folder):
+Click **Select subjects folder** button and select folders for 20 subjects (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\GLMs" folder):
 
 <p align="center">
 <img src = "illustrations/01_Select_subjects_GUI_2.PNG" width = 600>
 </p>
 
-Press **Select SPM.mat file for Subject #1** and select SPM.mat for the first subject ("...\GLMs\Subject_001\SPM.mat"), which contains information about the basic first-level GLM (typical GLM used for activation analysis):
+Click **Select SPM.mat file for Subject #1** and select SPM.mat for the first subject ("...\GLMs\Subject_001\SPM.mat"), which contains information about the basic first-level GLM (typical GLM used for activation analysis):
 
 <p align="center">
 <img src = "illustrations/01_Select_subjects_GUI_3.PNG" width = 600>
 </p>
 
-Check selected subjects and press OK:
+Check selected subjects and click OK:
 
 <p align="center">
-<img src = "illustrations/01_Select_subjects_GUI_4.PNG" width = 500>
+<img src = "illustrations/01_Select_subjects_GUI_4.PNG" width = 600>
 </p>
 
 ### Select ROIs
 
-Press **ROI_set** button and define ROI set name:
+Click **ROI_set** button and define ROI set name:
 
 <p align="center">
 <img src = "illustrations/02_Select_ROIs_GUI_1.PNG">
 </p>
 
-Press OK and select 100 ROI masks (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\ROI_masks" folder):
+Click OK and select 100 ROI masks (inside "...\Example_data_SF_[1.00] SNR_[1.00] STP_[0.20]_AR(1)\ROI_masks" folder):
 
 <p align="center">
 <img src = "illustrations/02_Select_ROIs_GUI_2.PNG" width = 600>
 </p>
 
-Check selected ROIs and press OK:
+Check selected ROIs and click OK:
 
 <p align="center">
-<img src = "illustrations/02_Select_ROIs_GUI_3.PNG">
+<img src = "illustrations/02_Select_ROIs_GUI_3.PNG" width = 600>
 </p>
 
 In this example, single voxel represents a single ROI (i.e., ROI size = 1 voxel). In real data, each ROI will consist of several voxels. 
@@ -165,7 +165,7 @@ TMFC toolbox creates a "TMFC_project_folder\ROI_set_name\Masked_ROIs" folder, wh
 ROI masks which do not contain any voxels that have data across all subjects will be removed from the TMFC analysis.
 User can also remove heavily cropped ROIs.
 
-You can define several ROI sets and switch between them. For example, push **ROI_set** button second time and then push "Add new ROI set":
+You can define several ROI sets and switch between them. For example, push **ROI_set** button a second time and then push "Add new ROI set":
 
 <p align="center">
 <img src = "illustrations/02_Select_ROIs_GUI_4.PNG">
@@ -173,7 +173,7 @@ You can define several ROI sets and switch between them. For example, push **ROI
 
 Define a name for the second ROI set (e.g., "20_ROIs) and select ROI masks for the second ROI set (e.g., select 20 ROIs). Now you can switch between ROI sets.
 
-Press **ROI_set** button third time and select "100_ROIs" set:
+Click **ROI_set** button a third time and select "100_ROIs" set:
 
 <p align="center">
 <img src = "illustrations/02_Select_ROIs_GUI_5.PNG">
@@ -285,12 +285,33 @@ contrast_number = [3,4];            % Calculate contrasts #3 and #4
 [sub_check] = tmfc_ROI_to_ROI_contrast(tmfc,type,contrast_number,ROI_set_number);
 [sub_check] = tmfc_seed_to_voxel_contrast(tmfc,type,contrast_number,ROI_set_number);
 
+% Load BSC-LSS matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'BSC_LSS','ROI_to_ROI',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+contrast = 1;                       % TaskA_vs_TaskB effect
+alpha = 0.001/2;                    % alpha = 0.001 thredhold corrected for two-sided comparison
+correction = 'FDR';                 % False Discovery Rate (FDR) correction (Benjamini–Hochberg procedure)
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot BSC-LSS results
+figure(1);
+sgtitle('BSC-LSS results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
 
 %% FIR task regression (regress out co-activations and save residual time series)
 
 % FIR window length in [s]
 tmfc.FIR.window = 24;
-% Nmber of FIR time bins
+% Number of FIR time bins
 tmfc.FIR.bins = 24;
 
 % Run FIR task regression
@@ -300,8 +321,7 @@ tmfc.FIR.bins = 24;
 %% LSS regression after FIR task regression (use residual time series)
 
 % Define conditions of interest
-[conditions] = tmfc_LSS_GUI(tmfc.subjects(1).path);
-tmfc.LSS_after_FIR.conditions = conditions;
+tmfc.LSS_after_FIR.conditions = tmfc.LSS.conditions;
 
 % Run LSS regression
 [sub_check] = tmfc_LSS_after_FIR(tmfc,start_sub);
@@ -314,6 +334,8 @@ ROI_set_number = 1;                 % Select ROI set
 [sub_check,contrasts] = tmfc_BSC_after_FIR(tmfc,ROI_set_number);
 
 % Update contrasts info
+% The tmfc_BSC_after_FIR function creates default contrasts for each
+% condition of interest (i.e., Condition > Baseline)
 tmfc.ROI_set(ROI_set_number).contrasts.BSC_after_FIR = contrasts;
 
 % Define new contrast:
@@ -324,13 +346,129 @@ tmfc.ROI_set(ROI_set_number).contrasts.BSC_after_FIR(4).weights = [-1 1];
 
 % Calculate new contrast
 type = 4;                           % BSC-LSS after FIR
-contrast_number = [3,4];                % Calculate contrast #2
+contrast_number = [3,4];            % Calculate contrast #3 and #4
 [sub_check] = tmfc_ROI_to_ROI_contrast(tmfc,type,contrast_number,ROI_set_number);
 [sub_check] = tmfc_seed_to_voxel_contrast(tmfc,type,contrast_number,ROI_set_number);
+
+% Load BSC-LSS (after FIR) matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+clear M marices conval thresholded
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'BSC_LSS_after_FIR','ROI_to_ROI',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot BSC-LSS (after FIR) results
+figure(2);
+sgtitle('BSC-LSS (after FIR task regression) results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 
 %% BGFC
 
 % Calculate background functional connectivity (BGFC)
 [sub_check] = tmfc_BGFC(tmfc,ROI_set_number,start_sub);
+
+
+%% gPPI
+
+% Define conditions of interest
+tmfc.ROI_set(ROI_set_number).gPPI.conditions = tmfc.LSS.conditions;
+
+% VOI extraction
+[sub_check] = tmfc_VOI(tmfc,ROI_set_number,start_sub);
+
+% PPI calculation
+[sub_check] = tmfc_PPI(tmfc,ROI_set_number,start_sub);
+
+% gPPI calculation
+[sub_check,contrasts] = tmfc_gPPI(tmfc,ROI_set_number,start_sub);
+
+% Update contrasts info
+% The tmfc_gPPI function creates default contrasts for each
+% condition of interest (i.e., Condition > Baseline)
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI = contrasts;
+
+% Define new contrasts:
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI(3).title = 'TaskA_vs_TaskB';
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI(4).title = 'TaskB_vs_TaskA';
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI(3).weights = [1 -1];
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI(4).weights = [-1 1];
+
+% Calculate new contrasts
+type = 1;                           % gPPI
+contrast_number = [3,4];            % Calculate contrasts #3 and #4
+[sub_check] = tmfc_ROI_to_ROI_contrast(tmfc,type,contrast_number,ROI_set_number);
+[sub_check] = tmfc_seed_to_voxel_contrast(tmfc,type,contrast_number,ROI_set_number);
+
+% Load gPPI matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+clear M marices conval thresholded
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI','ROI_to_ROI','symmetrical',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot gPPI results
+figure(3);
+sgtitle('gPPI results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
+
+%% gPPI-FIR (gPPI model with psychological regressors defined by FIR functions)
+
+% Define FIR parameters for gPPI-FIR
+tmfc.ROI_set(ROI_set_number).gPPI_FIR.window = 24;   % FIR window length in [s]
+tmfc.ROI_set(ROI_set_number).gPPI_FIR.bins = 24;     % Number of FIR time bins
+
+% gPPI-FIR calculation
+[sub_check,contrasts] = tmfc_gPPI_FIR(tmfc,ROI_set_number,start_sub);
+
+% Update contrasts info
+% The tmfc_gPPI_FIR function creates default contrasts for each
+% condition of interest (i.e., Condition > Baseline)
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR = contrasts;
+
+% Define new contrasts:
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR(3).title = 'TaskA_vs_TaskB';
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR(4).title = 'TaskB_vs_TaskA';
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR(3).weights = [1 -1];
+tmfc.ROI_set(ROI_set_number).contrasts.gPPI_FIR(4).weights = [-1 1];
+
+% Calculate new contrasts
+type = 2;                           % gPPI-FIR
+contrast_number = [3,4];            % Calculate contrasts #3 and #4
+[sub_check] = tmfc_ROI_to_ROI_contrast(tmfc,type,contrast_number,ROI_set_number);
+[sub_check] = tmfc_seed_to_voxel_contrast(tmfc,type,contrast_number,ROI_set_number);
+
+% Load gPPI-FIR matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+clear M marices conval thresholded
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','symmetrical',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot gPPI-FIR results
+figure(4);
+sgtitle('gPPI-FIR results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
 ```
