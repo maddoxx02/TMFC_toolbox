@@ -178,7 +178,7 @@ Check selected ROIs and click OK:
 </p>
 
 In this example, single voxel represents a single ROI (i.e., ROI size = 1 voxel). In real data, each ROI will consist of several voxels. 
-TMFC toolbox creates a "TMFC_project_folder\ROI_set_name\Masked_ROIs" folder, which contains:
+TMFC toolbox creates a **"TMFC_project_folder\ROI_sets\ROI_set_name\Masked_ROIs"** folder, which contains:
 * Group_mean.nii file - Group mean binary mask (identifies voxels that have data across all subjects)
 * ROI_name_masked.nii files - ROI mask files masked by Group_mean.nii file (reduce original ROI mask to voxels that have data across all subjects)
 
@@ -215,7 +215,7 @@ Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_proje
 
 To perform BSC-LSS analysis for selected ROI set, click **BSC LSS** button.
 
-Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_set_name\BSC_LSS"** folder with three subfolders:
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\BSC_LSS"** folder with three subfolders:
 * **Beta_series** - containes beta series extracted for the selected ROI set (beta parameters are averaged across voxels for each ROI mask);
 * **ROI_to_ROI**  - containes **BSC-LSS functional connectivity matrices** (Person's r converted to Fisher's Z);
 * **Seed_to_voxel** - containes **voxel-by-voxel BSC-LSS images** (*.nii files containing Fisher's Z values) calculated for each seed ROI.
@@ -292,8 +292,32 @@ To remove co-activations, we can perform task regression with finite impulse res
 Click **"FIR task regression"** button and specify FIR window length and the number of FIR time bins:
 
 <p align="center">
-<img src = "illustrations/05_FIR_GUI.png">
+<img src = "illustrations/05_FIR_GUI.PNG">
 </p>
+
+Click OK. Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\FIR_regression"** folder with subjects' subfolders. Subjects' subfolders will contain **residuals (*.nii images)**, as well as **SPM12 batches and SPM.mat files for FIR GLMs**. 
+
+To perform BSC-LSS analysis after FIR task regression (using residual time series), click **BSC LSS after FIR** button. The following steps are similar to those for the BSC-LSS analysis.
+
+## Generalized psyhophysiological interactions (gPPI)
+
+To perform gPPI analysis, we first need to extract time series from the seed ROIs and calculate psyhophysiological interaction (PPI) terms.
+
+### Volume of interest (VOI) 
+
+Click **"VOIs"** button to extract time series for the selected ROI set. Select conditions of interest. All other conditions will be considered as nuisance conditions. TMFC toolbox uses SPM12 volume of interest (VOI) function to extract time series. It extracts the first eigenvariate for the seed ROI after removing effects of no interest (using nuisance regressors, such as motion regressors, aCompCorr regressors, regressors for conditions of no interest, etc), and performing whitening and high-pass filtering.
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\VOIs"** folder with subjects' subfolders. Subjects' subfolders will contain SPM12 **VOI .mat files**.
+
+### Psyhophysiological interaction (PPI) terms
+
+Click **"PPIs"** button to calculate PPI terms using the deconvolution procedure ([Gitelman et al., 2003](https://doi.org/10.1016/S1053-8119(03)00058-2)). TMFC toolbox uses SPM12 Parametric Empirical Bayes (PEB) function to calulate PPI terms.
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\PPIs"** folder with subjects' subfolders. Subjects' subfolders will contain SPM12 **PPI .mat files**.
+
+### gPPI analysis
+
+Click **"gPPI"** button to perform gPPI analysis. 
 
 ## Change paths
 
