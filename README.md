@@ -1,4 +1,4 @@
-# Task-Modulated Functional Connectivity (TMFC) toolbox
+![image](https://github.com/user-attachments/assets/dcf85153-b26b-4587-88f1-c6dd3f01afde)# Task-Modulated Functional Connectivity (TMFC) toolbox
 ![GitHub License](https://img.shields.io/github/license/Masharipov/TMFC_toolbox)
 
 <img src = "illustrations/TMFC_toolbox.png">
@@ -165,7 +165,21 @@ TMFC toolbox creates a "TMFC_project_folder\ROI_set_name\Masked_ROIs" folder, wh
 ROI masks which do not contain any voxels that have data across all subjects will be removed from the TMFC analysis.
 User can also remove heavily cropped ROIs.
 
-###
+You can define several ROI sets and switch between them. For example, push **ROI_set** button second time and then push "Add new ROI set":
+
+<p align="center">
+<img src = "illustrations/02_Select_ROIs_GUI_4.PNG">
+</p>
+
+Define a name for the second ROI set (e.g., "20_ROIs) and select ROI masks for the second ROI set (e.g., select 20 ROIs). Now you can switch between ROI sets.
+
+Press **ROI_set** button third time and select "100_ROIs" set:
+
+<p align="center">
+<img src = "illustrations/02_Select_ROIs_GUI_5.PNG">
+</p>
+
+### 
 
 ## Change paths
 
