@@ -277,13 +277,23 @@ set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 ```
 
-Results for edge-wise inference with FDR-correction (p-FDR<0.001):
+Results for edge-wise inference with FDR-correction ("TaskA > TaskB" contrast):
 
 <p align="center">
 <img src = "illustrations/04_BSC_LSS_results.png">
 </p>
 
 ## BSC-LSS after FIR task regression
+
+Co-activations can spuriosly inflate TMFC estimates (see [the referenced paper](https://doi.org/10.1101/2024.01.22.576622) and [Cole et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.12.054)).
+
+To remove co-activations, we can perform task regression with finite impulse response (FIR) functions prior to BSC analysis.
+
+Click **"FIR task regression"** button and specify FIR window length and the number of FIR time bins:
+
+<p align="center">
+<img src = "illustrations/05_FIR_GUI.png">
+</p>
 
 ## Change paths
 
