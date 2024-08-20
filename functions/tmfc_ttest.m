@@ -82,6 +82,14 @@ switch correction
         alpha_Bonf = alpha/(N_ROI*(N_ROI-1)/2);
         thresholded = double(pval<alpha_Bonf);
         thresholded(1:1+N_ROI:end) = 0;
+
+    otherwise
+    thresholded = [];
+    pval = [];
+    tval = [];
+    conval = [];
+    warning('Work in progress. Please wait for future updates');
+
 end
 end
 
