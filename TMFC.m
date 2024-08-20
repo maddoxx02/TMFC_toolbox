@@ -2485,7 +2485,7 @@ end
 %% ===========================[ Results ]===================================
 function results(ButtonH, EventData, TMFC_GUI)
     MW_Freeze(1);
-    tmfc_results_GUI();
+    tmfc_statistics_GUI();
     MW_Freeze(0);
 end
 
