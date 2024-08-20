@@ -376,7 +376,7 @@ TMFC toolbox uses information from SPM.mat files to obtain paths to fMRI files. 
 Click **Change paths** button and select subjects for which you want to update the SPM.mat files. Enter the old path pattern (see **SPM.swd** field in SPM.mat file) and the new path pattern:
 
 <p align="center">
-<img src = "illustrations/08_Change_paths.png">
+<img src = "illustrations/08_Change_paths.PNG">
 </p>
 
 Click OK.
