@@ -371,6 +371,16 @@ Results for edge-wise inference with FDR-correction ("TaskA > TaskB" contrast):
 
 ## Change paths
 
+TMFC toolbox uses information from SPM.mat files to obtain paths to fMRI files. If you estimated first-level GLMs and then moved the GLM and fMRI data folders to another location, you need to change paths in SPM.mat files.
+
+Click **Change paths** button and select subjects for which you want to update the SPM.mat files. Enter the old path pattern (see **SPM.swd** field in SPM.mat file) and the new path pattern:
+
+<p align="center">
+<img src = "illustrations/08_Change_paths.png">
+</p>
+
+Click OK.
+
 ## Example of TMFC usage from command line
 
 Please see: <br/>
