@@ -71,8 +71,8 @@ switch correction
     case 'Uncorrected (Parametric)'
         thresholded = double(pval<alpha);
         thresholded(1:1+N_ROI:end) = 0;
-        figure();
-        imagesc(tval);
+        %figure();
+        %imagesc(tval);
 
     case 'FDR (Parametric)'
         [~,p] = ttest(a_matix_masked);

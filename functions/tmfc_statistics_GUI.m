@@ -1,4 +1,4 @@
-function tmfc_results_GUI()
+function tmfc_statistics_GUI()
 
 %% GUI Initialization
 RES_GUI = figure('Name', 'TMFC: Results', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.45 0.25 0.22 0.56],'MenuBar', 'none','ToolBar', 'none','color','w');
@@ -1164,7 +1164,9 @@ function run(~,~)
                 TP_1 = TP_check();
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                    tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),RES_THRES_POP.String{RES_THRES_POP.Value});
+                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),RES_THRES_POP.String{RES_THRES_POP.Value});
+                    run_test(thresholded,pval,tval,conval, str2double(RES_ALP_val.String));
+                    clear thresholded pval tval conval;
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),str2double(RES_PERM_VAL.String),str2double(RES_THRES_VAL_UNI.String),RES_THRES_POP.String{RES_THRES_POP.Value});
                 end
@@ -1311,7 +1313,7 @@ function flag = TP_check(~,~)
 
 end
 
-uiwait();
+%uiwait();
 end
 %%
 % Function to select (.mat) files from the user via spm_select
@@ -1611,4 +1613,132 @@ function flag = ROI_check(C, ralpher, new_files)
 end
 
 
+function run_test(thresholded,pval,tval,conval, alpha)
 
+% Plot results  
+figure('Name','TMFC Simulation: Output','NumberTitle', 'off','Units', 'normalized', 'Position', [0.4 0.25 0.50 0.50],'Tag', 'TMFC Simulation: Output','WindowStyle', 'modal');
+sgtitle('Results');  
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));  
+subplot(1,2,2); imagesc(thresholded);   subtitle(['pFDR<' num2str(alpha)]); axis square; colorbar;  
+colormap(subplot(1,2,1),'turbo')  
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
+save_data_btn = uicontrol('Style','pushbutton','String', 'Save Data','Units', 'normalized','Position',[0.18 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
+save_plot_btn = uicontrol('Style','pushbutton','String', 'Save Plots','Units', 'normalized','Position',[0.62 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
+set(save_data_btn,'callback', @int_data_saver)
+set(save_plot_btn ,'callback', @int_plot_saver)
+
+
+
+tmfc_res.threshold = thresholded;
+tmfc_res.pval = pval;
+tmfc_res.tval = tval;
+tmfc_res.conval = conval;
+tmfc_res.alpha = alpha; 
+
+function save_stat = int_data_saver(~,~)
+       
+    % Ask user for Filename & location name:
+    [filename_SO, pathname_SO] = uiputfile('*.mat', 'Save TMFC variable as'); %pwd
+    
+    % Set Flag save status to Zero, this flag is used in the future as
+    % a reference to check if the Save was successful or not
+    save_stat = 0;
+    
+    % Check if FileName or Path is missing or not available 
+    if isequal(filename_SO, 0) || isequal(pathname_SO, 0)
+        error('Simulation Results not saved, File name or Save Directory not selected');
+    
+    else
+        % If all data is available
+        % Construct full path: PATH + FileName
+        % e.g (D:\user\matlab\ + Test.m)
+        
+        fullpath = fullfile(pathname_SO, filename_SO);
+        
+        % D receives the save status of the variable in the desingated
+        % location
+        save_stat = saver(fullpath);
+        
+        % If the variable was successfully saved then display info
+        if save_stat == 1
+            fprintf('Simulations results saved successfully in path: %s\n', fullpath);
+        else
+            fprintf('Simulation results not saved ');
+        end
+    end
+          
+end % Closing Save project Function
+
+function save_stat = int_plot_saver(~,~)
+       
+    % Ask user for Filename & location name:
+    [filename_SO, pathname_SO] = uiputfile('*.png', 'Save TMFC Plots as'); %pwd
+    
+    % Set Flag save status to Zero, this flag is used in the future as
+    % a reference to check if the Save was successful or not
+    save_stat = 0;
+    
+    % Check if FileName or Path is missing or not available 
+    if isequal(filename_SO, 0) || isequal(pathname_SO, 0)
+        error('Simulation results plots not saved, File name or Save Directory not selected');
+    
+    else
+        % If all data is available
+        % Construct full path: PATH + FileName
+        % e.g (D:\user\matlab\ + Test.m)
+        
+        fullpath = fullfile(pathname_SO, filename_SO);
+        
+        % D receives the save status of the variable in the desingated
+        % location
+        save_stat = saver_plot(fullpath);
+        
+        % If the variable was successfully saved then display info
+        if save_stat == 1
+            fprintf('Simulation plots saved successfully in path: %s\n', fullpath);
+        else
+            fprintf('Simulation plots not saved\n');
+        end
+    end
+          
+end % Closing Save project Function
+
+
+
+function SAVER_STAT =  saver(save_path)
+% 0 - Successfull save, 1 - Failed save
+    try 
+        save(save_path, 'tmfc_res');
+        SAVER_STAT = 1;
+        % Save Success
+    catch 
+        SAVER_STAT = 0;
+        % Save Fail 
+    end
+end
+
+function SAVER_STAT =  saver_plot(save_path)
+% 0 - Successfull save, 1 - Failed save
+    try 
+        %save(save_path, 'tmfc_res');
+        F = findobj('Type', 'figure', 'Tag', 'TMFC Simulation: Output');
+        saveas(F, save_path);
+        SAVER_STAT = 1;
+        % Save Success
+    catch 
+        SAVER_STAT = 0;
+        % Save Fail 
+    end
+end
+
+
+
+
+
+
+
+
+
+
+end
