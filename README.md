@@ -8,13 +8,13 @@
 **TMFC** is a MATLAB toolbox for SPM12 for task-modulated functional connectivity analysis.
 
 TMFC toolbox implements:
- - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**)
- - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure
- - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices)
- - Finite impulse response (**FIR**) task regression to remove co-activations
- - Graphical user interface (**GUI**) and command line interface (**CLI**)
- - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks)
- - Parralel computations
+ - Beta-series correlations based on the least-squares separate appoach (**BSC-LSS**);
+ - Generalized psyhophysiological interactions (**gPPI**) with deconvolution procedure;
+ - **Seed-to-voxel** analysis and **ROI-to-ROI** analysis (to create FC matrices);
+ - Finite impulse response (**FIR**) task regression to remove co-activations;
+ - Graphical user interface (**GUI**) and command line interface (**CLI**);
+ - RAM control (allows to estimate model parameters in the whole-brain at a time without dividing into chunks);
+ - Parralel computations.
 
 If you use TMFC toolbox, please cite this study: <br/>
 [Masharipov et al. "Comparison of whole-brain task-modulated functional connectivity methods for fMRI task connectomics." bioRxiv (2024): 2024-01](https://doi.org/10.1101/2024.01.22.576622).
@@ -25,7 +25,7 @@ If you use TMFC toolbox, please cite this study: <br/>
 2) Add TMFC toolbox to your MATLAB path (Home --> Set path --> Add with Subfolders --> Select TMFC_toolbox folder);
 3) Enter **TMFC** in command window to open TMFC GUI <br/>
    or <br/>
-4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line
+4) See [TMFC_command_window_example.m](examples/TMFC_command_window_example.m) to run TMFC functions via command line.
 
 ## Example data
 
@@ -104,12 +104,12 @@ Click **Settings** button to open settings window:
 <img src = "illustrations/00_Settings_GUI.PNG" width = 400>
 </p>
 
-* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations)
-* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM)
-* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations) 
-* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both)
+* Choose between sequential and parallel computing (default: sequential computing)(change to parallel computing to speed up computations);
+* Choose to store temporary files for GLM estimation on disk or in RAM (default: in RAM);
+* Define Max RAM for GLM estimation (default: 2^32 = 4 GB)(change to 2^33 or 2^34 to speed up computations);
+* Choose to perform seed-to-voxel and/or ROI-to-ROI analysis (default: both).
 
-Click OK
+Click OK.
 
 ## Overview of TMFC functions 
 
@@ -178,7 +178,7 @@ Check selected ROIs and click OK:
 </p>
 
 In this example, single voxel represents a single ROI (i.e., ROI size = 1 voxel). In real data, each ROI will consist of several voxels. 
-TMFC toolbox creates a "TMFC_project_folder\ROI_set_name\Masked_ROIs" folder, which contains:
+TMFC toolbox creates a **"TMFC_project_folder\ROI_sets\ROI_set_name\Masked_ROIs"** folder, which contains:
 * Group_mean.nii file - Group mean binary mask (identifies voxels that have data across all subjects)
 * ROI_name_masked.nii files - ROI mask files masked by Group_mean.nii file (reduce original ROI mask to voxels that have data across all subjects)
 
@@ -215,7 +215,7 @@ Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_proje
 
 To perform BSC-LSS analysis for selected ROI set, click **BSC LSS** button.
 
-Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_set_name\BSC_LSS"** folder with three subfolders:
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\BSC_LSS"** folder with three subfolders:
 * **Beta_series** - containes beta series extracted for the selected ROI set (beta parameters are averaged across voxels for each ROI mask);
 * **ROI_to_ROI**  - containes **BSC-LSS functional connectivity matrices** (Person's r converted to Fisher's Z);
 * **Seed_to_voxel** - containes **voxel-by-voxel BSC-LSS images** (*.nii files containing Fisher's Z values) calculated for each seed ROI.
@@ -240,7 +240,7 @@ Click OK to calculate the new contrast. Each time you need to calculate a new co
 
 ### Seed-to-voxel results
 
-You can use SPM12 software to perform voxel-wise statistical inference. Click "Specify 2nd-level" button, select "One-sample t-test" and specify 20 contrast files for the "Cond_A_vs_Cond_B" contrast and selected seed ROI from the **...\Seed_to_voxel\ROI_name** subfolder.
+You can use the SPM12 software to perform voxel-wise statistical inference. Click "Specify 2nd-level" button, select "One-sample t-test" and specify 20 contrast files for the "Cond_A_vs_Cond_B" contrast and the selected seed ROI from the **...\Seed_to_voxel\ROI_name** subfolder.
 
 ### ROI-to-ROI results
 
@@ -277,13 +277,97 @@ set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
 ```
 
-Results for edge-wise inference with FDR-correction (p-FDR<0.001):
+Results for edge-wise inference with FDR-correction ("TaskA > TaskB" contrast):
 
 <p align="center">
-<img src = "illustrations/04_BSC_LSS_results.PNG">
+<img src = "illustrations/04_BSC_LSS_results.png">
 </p>
 
 ## BSC-LSS after FIR task regression
+
+Co-activations can spuriosly inflate TMFC estimates (see [the referenced paper](https://doi.org/10.1101/2024.01.22.576622) and [Cole et al., 2019](https://doi.org/10.1016/j.neuroimage.2018.12.054)).
+
+To remove co-activations, we can perform task regression with finite impulse response (FIR) functions prior to BSC analysis.
+
+Click **"FIR task regression"** button and specify FIR window length and the number of FIR time bins:
+
+<p align="center">
+<img src = "illustrations/05_FIR_GUI.PNG">
+</p>
+
+Click OK. Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\FIR_regression"** folder with subjects' subfolders. Subjects' subfolders will contain **residuals (*.nii images)**, as well as **SPM12 batches and SPM.mat files for FIR GLMs**. 
+
+To perform BSC-LSS analysis after FIR task regression (using residual time series), click **BSC LSS after FIR** button. The following steps are similar to those for the BSC-LSS analysis.
+
+## Generalized psyhophysiological interactions (gPPI)
+
+To perform gPPI analysis, we first need to extract time series from the seed ROIs and calculate psyhophysiological interaction (PPI) terms.
+
+### Volume of interest (VOI) 
+
+Click **"VOIs"** button to extract time series for the selected ROI set. Select conditions of interest. All other conditions will be considered as nuisance conditions. TMFC toolbox uses SPM12 volume of interest (VOI) function to extract time series. It extracts the first eigenvariate for the seed ROI after removing effects of no interest (using nuisance regressors, such as motion regressors, aCompCorr regressors, regressors for conditions of no interest, etc), and performing whitening and high-pass filtering.
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\VOIs"** folder with subjects' subfolders. Subjects' subfolders will contain SPM12 **VOI .mat files**.
+
+### Psyhophysiological interaction (PPI) terms
+
+Click **"PPIs"** button to calculate PPI terms using the deconvolution procedure ([Gitelman et al., 2003](https://doi.org/10.1016/S1053-8119(03)00058-2)). TMFC toolbox uses SPM12 Parametric Empirical Bayes (PEB) function to calulate PPI terms.
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\PPIs"** folder with subjects' subfolders. Subjects' subfolders will contain SPM12 **PPI .mat files**.
+
+### gPPI analysis
+
+Click **"gPPI"** button to perform gPPI analysis. 
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\gPPI"** folder with three subfolders:
+* **GLM_batches** - containes SPM12 batches for gPPI GLMs;
+* **ROI_to_ROI**  - containes **gPPI functional connectivity matrices** (asymmetrical and symmetrical, symmetrization is carried out by averaging the upper and lower diagonal elements);
+* **Seed_to_voxel** - containes **voxel-by-voxel gPPI images** calculated for each seed ROI.
+
+## gPPI-FIR analysis
+
+To remove co-activations with arbitrary shape of HRF function, we can combine FIR task regression with gPPI regression. The difference between classic gPPI GLM and gPPI-FIR GLM is that the
+latter uses finite impulse response (FIR) functions (instead of canonical HRF function) to model activations for conditions of interst and conditions of no interest. The FIR model allows to model activations with any possible hemodynamic response shape.
+
+Click **"gPPI-FIR"** button to perform gPPI-FIR analysis. 
+
+Once the calculations are complete, TMFC toolbox will create a **"...\TMFC_project_name\ROI_sets\ROI_set_name\gPPI-FIR"** folder with three subfolders (GLM_batches, ROI_to_ROI, Seed_to_voxel).
+
+### gPPI-FIR results
+
+To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
+```matlab
+% Select TMFC project path
+tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
+
+% Load gPPI-FIR matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
+for i = 1:data.N 
+    M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','symmetrical',...
+        ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
+end
+matrices = cat(3,M(:).paths);
+
+% Perform one-sample t-test (two-sided, FDR-correction) 
+contrast = 1;                       % TaskA_vs_TaskB effect
+alpha = 0.001/2;                    % alpha = 0.001 thredhold corrected for two-sided comparison
+correction = 'FDR';                 % False Discovery Rate (FDR) correction (Benjamini–Hochberg procedure)
+[thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction); 
+
+% Plot gPPI-FIR results
+figure(2);
+sgtitle('gPPI-FIR results');
+subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));
+subplot(1,2,2); imagesc(thresholded);   subtitle('pFDR<0.001'); axis square; colorbar;
+colormap(subplot(1,2,1),'redblue')
+set(findall(gcf,'-property','FontSize'),'FontSize',16)
+
+```
+
+Results for edge-wise inference with FDR-correction ("TaskA > TaskB" contrast):
+
+<p align="center">
+<img src = "illustrations/07_gPPI_FIR_results.png">
+</p>
 
 ## Change paths
 
