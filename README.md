@@ -56,7 +56,7 @@ clear
 data.SF  = 1;         % Scaling Factor (SF) for co-activations: SF = SD_oscill/SD_coact
 data.SNR = 1;         % Signal-to-noise ratio (SNR): SNR = SD_signal/SD_noise
 data.STP_delay = 0.2; % Short-term synaptic plasticity (STP) delay, [s]
-data.N = 20;          % Sample size (Select 20 subjects out of 100 to reduce computations)
+ = 20;          % Sample size (Select 20 subjects out of 100 to reduce computations)
 data.N_ROIs = 100;    % Number of ROIs
 data.dummy = 3;       % Remove first M dummy scans
 data.TR = 2;          % Repetition time (TR), [s]
@@ -255,7 +255,7 @@ To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
 tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
 
 % Load BSC-LSS matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
-for i = 1:data.N 
+for i = 1:20 
     M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'BSC_LSS','ROI_to_ROI',...
         ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
 end
@@ -341,7 +341,7 @@ To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
 tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
 
 % Load gPPI-FIR matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
-for i = 1:data.N 
+for i = 1:20
     M(i).paths = struct2array(load(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','symmetrical',...
         ['Subject_' num2str(i,'%04.f') '_Contrast_0003_[TaskA_vs_TaskB].mat'])));
 end
@@ -395,7 +395,7 @@ close all
 
 spm_jobman('initcfg');
 data.stat_path = spm_select(1,'dir','Select a folder for data extraction and statistical analysis');
-
+data.N = 20; % 20 subjects
 
 %% Setting up computation parameters
 
