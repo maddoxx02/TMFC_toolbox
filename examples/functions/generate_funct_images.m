@@ -21,13 +21,14 @@ oscill = zscore(oscill) + 100.*ones(size(oscill));
 % Scale coactivations
 coact = zscore(coact)./SF;
 coact(isinf(coact)) = 0;
+coact = repmat(coact,1,1,N);
 
 % Additive white gaussian noise (AWGN)
 noise = randn(dur,N_ROIs,N)./SNR;
 noise(isinf(noise)) = 0;
 
 % BOLD = WC-oscillations + coactivations + noise
-BOLD = oscill(:,1:N_ROIs,1:N) + coact(1:dur,1:N_ROIs) + noise;
+BOLD = oscill(1:dur,1:N_ROIs,1:N) + coact(1:dur,1:N_ROIs,:) + noise;
 
 % Make folder for .nii images
 mkdir([stat_path filesep exp_folder filesep 'funct_images']);
