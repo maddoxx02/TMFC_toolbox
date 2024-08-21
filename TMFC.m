@@ -2438,18 +2438,12 @@ function close_GUI(ButtonH, EventData, TMFC_GUI)
 
     % Content - Can be changed to a single sentence using \html or
     % sprtinf
-    EX_Q1 = uicontrol(EXIT_PROMPT,'Style','text','String', 'Would you like to save your progress','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38);
-    EX_Q2 = uicontrol(EXIT_PROMPT,'Style','text','String', 'before exiting TMFC toolbox?', 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38);
+    EX_Q1 = uicontrol(EXIT_PROMPT,'Style','text','String', 'Would you like to save your progress','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.04 0.55 0.94 0.260]);
+    EX_Q2 = uicontrol(EXIT_PROMPT,'Style','text','String', 'before exiting TMFC toolbox?', 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38,'Position',[0.10 0.40 0.80 0.260]);
 
     % Buttons of the GUI
-    EX_YES = uicontrol(EXIT_PROMPT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40);
-    EX_NO = uicontrol(EXIT_PROMPT,'Style','pushbutton', 'String', 'No','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40);
-
-    % Spawn Positions of the GUI text boxes & buttons
-    EX_Q1.Position = [0.04 0.55 0.94 0.260];
-    EX_Q2.Position = [0.10 0.40 0.80 0.260];
-    EX_YES.Position = [0.16 0.18 0.300 0.200];
-    EX_NO.Position = [0.57 0.18 0.300 0.200];
+    EX_YES = uicontrol(EXIT_PROMPT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.16 0.18 0.300 0.200]);
+    EX_NO = uicontrol(EXIT_PROMPT,'Style','pushbutton', 'String', 'No','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.57 0.18 0.300 0.200]);
 
     % Colour of Text boxes & actions of buttons
     set([EX_Q1,EX_Q2],'backgroundcolor',get(EXIT_PROMPT,'color'));

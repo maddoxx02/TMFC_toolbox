@@ -265,7 +265,7 @@ function file_func = action_5(~,~)
             % Stage 1 - Check SPM.mat files existence
             [file_exist,file_not_exist] = SPM_EXT_CHK(file_address);        
     
-            if size(file_address) == size(file_not_exist) | strcmp(file_exist, '')
+            if size(file_address) == size(file_not_exist) | isempty(file_exist) %| strcmp(file_exist, '')
                 warning('STAGE 1 CHECK FAILED: Selected files are missing from the directories, Please try again');
                 Royal_Reset();
             else
@@ -348,7 +348,7 @@ function [full_path, mat_adrs] = mat_file(x)
         
     % Selection of the SPM.mat file for the first subject 
     [mat_f] = spm_select( 1,'any','Select SPM.mat file for the first subject',{}, x(1,:), 'SPM.*');    
-    [mat_adrs] = replace(mat_f, x(1,:),''); 
+    [mat_adrs] = strrep(mat_f, x(1,:),''); 
     len_subs = size(x);
 
     full_path = {}; % Creation of variable to store all the new Full paths of the subjects 
