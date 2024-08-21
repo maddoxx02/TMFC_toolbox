@@ -1,22 +1,16 @@
-function [thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction)
+function [thresholded,pval,tval,conval] = tmfc_ttest2(matrices,contrast,alpha,correction)
 
 % ========= Task-Modulated Functional Connectivity (TMFC) toolbox =========
 %
-% Performes one-sample and paired-sample t-test for symmetrical
-% connectivity matrices.
+% Performes two-sample t-test for symmetrical connectivity matrices.
 %
-% FORMAT [thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,correction)
+% FORMAT [thresholded,pval,tval,conval] = tmfc_ttest2(matrices,contrast,alpha,correction)
 %
 % INPUTS:
 %
-% matrices    - functional connectivity matrices
-%
-%            1) one-sample: 3-D array (ROI x ROI x Subjects)
-%
-%            2) paired-sample (cell array):
-%               matrices{1} - 1st measure, 3-D array (ROI x ROI x Subjects)
-%               matrices{2} - 2nd measure, 3-D array (ROI x ROI x Subjects)
-%
+% matrices    - functional connectivity matrices (cell array):
+%               matrices{1} - 1st group, 3-D array (ROI x ROI x Subjects)
+%               matrices{2} - 2nd group, 3-D array (ROI x ROI x Subjects)    
 % contrast    - contrast weight
 % alpha       - alpha level
 % correction  - correction for multiple comparisons:
@@ -51,18 +45,15 @@ function [thresholded,pval,tval,conval] = tmfc_ttest(matrices,contrast,alpha,cor
 %
 % Contact email: masharipov@ihb.spb.ru
 
-if iscell(matrices)
-    matrices = contrast(1)*matrices{1} + contrast(2)*matrices{2};
-else
-    matrices = contrast.*matrices;
-end
+group1 = contrast(1)*matrices{1};
+group2 = contrast(2)*matrices{2};
 
-N_ROI = size(matrices,1);
-conval = mean(matrices,3);
+N_ROI = size(group1,1);
+conval = mean(group1,3) + mean(group2,3);
 
 for roii = 1:N_ROI
     for roij = roii+1:N_ROI
-        [~,pval(roii,roij),~,stat] = ttest(shiftdim(matrices(roii,roij,:)));
+        [~,pval(roii,roij),~,stat] = ttest2(shiftdim(group1(roii,roij,:)),shiftdim(group2(roii,roij,:)));
         tval(roii,roij) = stat.tstat;
         pval(roij,roii) = pval(roii,roij);
         tval(roij,roii) = tval(roii,roij);
