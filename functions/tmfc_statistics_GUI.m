@@ -712,6 +712,7 @@ end
 % Remove button for "One-sample T-Test" 
 function action_remove_0(~,~)
    if isempty(selection_0) && isempty(M0)
+       clear matrices
        warning('There are no files present to remove, please select .mat files to perform Results analysis');
    elseif isempty(selection_0) && ~isempty(M0)
         warning('There are no selected matrices to remove from the list, please select matrices once again');
