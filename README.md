@@ -253,6 +253,7 @@ To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
 ```matlab
 % Select TMFC project path
 tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
+ROI_set_number = 1;
 
 % Load BSC-LSS matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
 for i = 1:20 
@@ -339,6 +340,7 @@ To visualisaze the ROI-to-ROI results, enter this code in MATLAB command window:
 ```matlab
 % Select TMFC project path
 tmfc.project_path = spm_select(1,'dir','Select TMFC project folder');
+ROI_set_number = 1;
 
 % Load gPPI-FIR matrices for the 'TaskA_vs_TaskB' contrast (contrast # 3)
 for i = 1:20
