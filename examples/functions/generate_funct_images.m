@@ -16,11 +16,10 @@ coact(1:dummy,:) = [];
 dur = size(oscill,1);
 
 % Normalize oscillations
-oscill = normalize(oscill) + 100.*ones(size(oscill));
+oscill = zscore(oscill) + 100.*ones(size(oscill));
 
 % Scale coactivations
-[tmp,C,S] = normalize(coact);
-coact = normalize(coact,'center',C,'scale',S.*SF);
+coact = zscore(coact)./SF;
 coact(isinf(coact)) = 0;
 
 % Additive white gaussian noise (AWGN)
