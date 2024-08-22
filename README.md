@@ -21,6 +21,8 @@ If you use TMFC toolbox, please cite this study: <br/>
 
 ## Installation
 
+This toolbox requeres MATLAB R2021b or later.
+
 1) Add SPM12 to your MATLAB path (in case the user has not already done so);
 2) Add TMFC toolbox to your MATLAB path (Home --> Set path --> Add with Subfolders --> Select TMFC_toolbox folder);
 3) Enter **TMFC** in command window to open TMFC GUI <br/>
