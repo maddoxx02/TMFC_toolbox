@@ -1161,7 +1161,9 @@ function run(~,~)
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                     [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
-                    run_test(thresholded,pval,tval,conval, str2double(RES_ALP_val.String));
+                    if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                        run_test(thresholded,pval,tval,conval, str2double(RES_ALP_val.String));
+                    end
                     clear thresholded pval tval conval;
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),str2double(RES_PERM_VAL.String),str2double(RES_THRES_VAL_UNI.String),RES_THRES_POP.String{RES_THRES_POP.Value});
@@ -1729,18 +1731,12 @@ function SAVER_STAT =  saver_plot(save_path)
 end
 
 
-
-
-
-
-
-
-
-
 end
 % function to convert internal labelling to tmfc_ttest() labelling
 function small_string = thresh_ttest_adapter(big_string)
 
+    small_string = '';
+    
     switch big_string 
         case 'Uncorrected (Parametric)'
             small_string = 'uncorr';
