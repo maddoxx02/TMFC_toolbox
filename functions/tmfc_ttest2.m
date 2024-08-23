@@ -53,7 +53,7 @@ conval = mean(group1,3) + mean(group2,3);
 
 for roii = 1:N_ROI
     for roij = roii+1:N_ROI
-        [~,pval(roii,roij),~,stat] = ttest2(shiftdim(group1(roii,roij,:)),shiftdim(group2(roii,roij,:)));
+        [~,pval(roii,roij),~,stat] = ttest2(shiftdim(group1(roii,roij,:)),shiftdim(group2(roii,roij,:)),'tail','right');
         tval(roii,roij) = stat.tstat;
         pval(roij,roii) = pval(roii,roij);
         tval(roij,roii) = tval(roii,roij);

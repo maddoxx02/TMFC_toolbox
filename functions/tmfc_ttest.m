@@ -62,7 +62,7 @@ conval = mean(matrices,3);
 
 for roii = 1:N_ROI
     for roij = roii+1:N_ROI
-        [~,pval(roii,roij),~,stat] = ttest(shiftdim(matrices(roii,roij,:)));
+        [~,pval(roii,roij),~,stat] = ttest(shiftdim(matrices(roii,roij,:)),[],'tail','right');
         tval(roii,roij) = stat.tstat;
         pval(roij,roii) = pval(roii,roij);
         tval(roij,roii) = tval(roii,roij);

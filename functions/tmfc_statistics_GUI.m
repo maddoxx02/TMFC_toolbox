@@ -1162,7 +1162,7 @@ function run(~,~)
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                     [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
-                        run_test(thresholded,pval,tval,conval, str2double(RES_ALP_val.String));
+                        run_test(thresholded,pval,tval,conval,str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     end
                     clear thresholded pval tval conval;
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
@@ -1316,7 +1316,7 @@ end
 %%
 % Function to select (.mat) files from the user via spm_select
 function list_sel = selector(~,~)  
-    files = spm_select(inf,'.mat','Select matrices for computation',{},pwd,'..');
+    files = spm_select(inf,'.mat','Select matrices for computation',{},pwd,'.');
     list_sel = {};
     list_sel = cellstr(files);
 end
@@ -1611,13 +1611,13 @@ function flag = ROI_check(C, ralpher, new_files)
 end
 
 
-function run_test(thresholded,pval,tval,conval, alpha)
+function run_test(thresholded,pval,tval,conval,alpha,correction)
 
 % Plot results  
 figure('Name','TMFC Simulation: Output','NumberTitle', 'off','Units', 'normalized', 'Position', [0.4 0.25 0.50 0.50],'Tag', 'TMFC Simulation: Output','WindowStyle', 'modal');
 sgtitle('Results');  
 subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));  
-subplot(1,2,2); imagesc(thresholded);   subtitle(['pFDR<' num2str(alpha)]); axis square; colorbar;  
+subplot(1,2,2); imagesc(thresholded);   subtitle(['p' correction '<' num2str(alpha)]); axis square; colorbar;  
 colormap(subplot(1,2,1),'turbo')  
 set(findall(gcf,'-property','FontSize'),'FontSize',16)
 
