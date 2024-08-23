@@ -40,7 +40,7 @@ RES_ALP_val  = uicontrol(RES_GUI,'Style','edit','String', '','Units', 'normalize
 
 % Type of Threshold selection Pop Up menu and conditional value
 RES_THRES_TXT = uicontrol(RES_GUI,'Style','text','String', 'Threshold type: ','Units', 'normalized', 'Position',[0.098 0.298 0.38 0.04],'fontunits','normalized', 'fontSize', 0.58, 'HorizontalAlignment','Left','backgroundcolor','w');
-RES_THRES_POP = uicontrol(RES_GUI,'Style','popupmenu','String', {'Uncorrected (Parametric)', 'FDR (Parametric)', 'Uncorrected (Non-Parametric)','FDR (Non-Parametric)','NBS FWE(Non-Parametric)','NBS TFCE(Non-Parametric)'},'Units', 'normalized', 'Position',[0.358 0.295 0.6 0.05],'fontunits','normalized', 'fontSize', 0.50,'backgroundcolor','w');
+RES_THRES_POP = uicontrol(RES_GUI,'Style','popupmenu','String', {'Uncorrected (Parametric)', 'FDR (Parametric)', 'Bonferroni (Parametric)', 'Uncorrected (Non-Parametric)','FDR (Non-Parametric)','NBS FWE(Non-Parametric)','NBS TFCE(Non-Parametric)'},'Units', 'normalized', 'Position',[0.358 0.295 0.6 0.05],'fontunits','normalized', 'fontSize', 0.50,'backgroundcolor','w');
 RES_THRES_VAL_TXT = uicontrol(RES_GUI,'Style','text','String', 'Primary Threshold Value (Pval): ','Units', 'normalized', 'Position',[0.098 0.23 0.5 0.04],'fontunits','normalized', 'fontSize', 0.58, 'HorizontalAlignment','Left','backgroundcolor','w', 'enable', 'off');
 RES_THRES_VAL_UNI = uicontrol(RES_GUI,'Style','edit','String', '','Units', 'normalized', 'Position',[0.76 0.234 0.2 0.04],'fontunits','normalized', 'fontSize', 0.58,'backgroundcolor','w', 'enable', 'off');
 RES_PERM_TXT = uicontrol(RES_GUI,'Style','text','String', 'Permutations: ','Units', 'normalized', 'Position',[0.098 0.165 0.38 0.04],'fontunits','normalized', 'fontSize', 0.58, 'HorizontalAlignment','Left','backgroundcolor','w', 'enable', 'off');
@@ -67,6 +67,7 @@ M0 = {}; % variable to store the matrices for One-sample t-test
 M1 = {}; % variable to store the matrices set 1 Paired & Two-sample t-test
 M2 = {}; % variable to store the matrices set 2 Paired & Two-sample t-test
 
+test_thresh = '';
 % Variables to store present selection of matrices from list
 selection_0 = '';
 selection_1 = '';
@@ -1159,7 +1160,7 @@ function run(~,~)
                 TP_1 = TP_check();
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),RES_THRES_POP.String{RES_THRES_POP.Value});
+                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     run_test(thresholded,pval,tval,conval, str2double(RES_ALP_val.String));
                     clear thresholded pval tval conval;
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
@@ -1302,7 +1303,7 @@ function flag = TP_check(~,~)
          else
              warning('Please enter a Primary Threshold value for computation');
          end       
-     elseif strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)')
+     elseif strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)') || strcmp(approach, 'Bonferroni (Parametric)' )
          flag = 1;
      end
 
@@ -1736,4 +1737,19 @@ end
 
 
 
+end
+% function to convert internal labelling to tmfc_ttest() labelling
+function small_string = thresh_ttest_adapter(big_string)
+
+    switch big_string 
+        case 'Uncorrected (Parametric)'
+            small_string = 'uncorr';
+        
+        case 'FDR (Parametric)'
+            small_string = 'FDR';
+        
+        case 'Bonferroni (Parametric)'
+            small_string = 'Bonf';
+            
+    end
 end
