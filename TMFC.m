@@ -1301,7 +1301,7 @@ function BSC(buttonH, EventData, TMFC_GUI)
         % Track & Store the number of Conditions, Sessions & Trials for LSS
         try
            SZC_tmfc = size(tmfc.LSS.conditions);
-           post = tmfc.subjects(length(tmfc.subjects)).LSS.session(max(tmfc.LSS.conditions.sess)).condition(SZC_tmfc(2)).trials; 
+           post = tmfc.subjects(length(tmfc.subjects)).LSS.session(max([tmfc.LSS.conditions.sess])).condition(SZC_tmfc(2)).trials; 
         end
         
         
@@ -1339,7 +1339,7 @@ function BSC(buttonH, EventData, TMFC_GUI)
                             
                             % Restart Case
                             if tmfc.ROI_set(tmfc.ROI_set_number).subjects(1).BSC == 1 && tmfc.ROI_set(tmfc.ROI_set_number).subjects(length(tmfc.subjects)).BSC == 1
-                                fprintf('\nBSC has been completely calcualted using the LSS settings of %d Sessions and %d Conditions. \n', max(tmfc.LSS.conditions.sess), SZC_tmfc(2));
+                                fprintf('\nBSC has been completely calcualted using the LSS settings of %d Sessions and %d Conditions. \n', max([tmfc.LSS.conditions.sess]), SZC_tmfc(2));
                                 fprintf('To calcualte BSC with different settings, please recompute LSS BSC with desrided combination of sessions and conditions \n');         
                                 fprintf('\nContinue to select contrasts\n');
                                 
@@ -2099,7 +2099,7 @@ function BSC_after_FIR(ButtonH, EventData, TMFC_GUI)
        % Track & Store the number of Conditions, Sessions, trial LSS for FIR
        try
            SZC_tmfc = size(tmfc.LSS_after_FIR.conditions);
-           post = tmfc.subjects(length(tmfc.subjects)).LSS_after_FIR.session(max(tmfc.LSS_after_FIR.conditions.sess)).condition(SZC_tmfc(2)).trials; 
+           post = tmfc.subjects(length(tmfc.subjects)).LSS_after_FIR.session(max([tmfc.LSS_after_FIR.conditions.sess])).condition(SZC_tmfc(2)).trials; 
        end
        
        % Check if Seubjects have been selected
@@ -2136,7 +2136,7 @@ function BSC_after_FIR(ButtonH, EventData, TMFC_GUI)
                             
                             % Restart case
                             if tmfc.ROI_set(tmfc.ROI_set_number).subjects(1).BSC_after_FIR == 1 && tmfc.ROI_set(tmfc.ROI_set_number).subjects(length(tmfc.subjects)).BSC_after_FIR == 1
-                                fprintf('\nBSC after FIR has been completely calcualted using the LSS FIR settings of %d Sessions and %d Conditions. \n', max(tmfc.LSS_after_FIR.conditions.sess), SZC_tmfc(2));
+                                fprintf('\nBSC after FIR has been completely calcualted using the LSS FIR settings of %d Sessions and %d Conditions. \n', max([tmfc.LSS_after_FIR.conditions.sess]), SZC_tmfc(2));
                                 fprintf('To calcualte BSC after FIR with different settings, please recompute LSS FIR with desrided combination of sessions and conditions \n');         
                                 fprintf('\nContinue to select contrasts\n');
                                 
