@@ -1160,9 +1160,11 @@ function run(~,~)
                 TP_1 = TP_check();
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));                   
+                    
                     if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
-                        run_test(thresholded,pval,tval,conval,str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                        fprintf('\nGenerating Results graph...\n');
+                        tmfc_results_GUI(thresholded,pval,tval,conval,str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     end
                     clear thresholded pval tval conval;
                     %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
@@ -1311,7 +1313,7 @@ function flag = TP_check(~,~)
 
 end
 
-%uiwait();
+uiwait();
 end
 %%
 % Function to select (.mat) files from the user via spm_select

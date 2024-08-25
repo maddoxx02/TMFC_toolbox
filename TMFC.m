@@ -98,7 +98,8 @@ if isempty(findobj('Tag', 'TMFC_GUI')) == 1
     handles.TMFC_GUI_B9 = uicontrol('Style', 'pushbutton', 'String', 'Background connectivity', 'Units', 'normalized', 'Position', [0.06 0.38 0.884 0.05],'FontUnits','normalized','FontSize',0.33);
     handles.TMFC_GUI_B10 = uicontrol('Style', 'pushbutton', 'String', 'LSS GLM after FIR', 'Units', 'normalized', 'Position', [0.06 0.30 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
     handles.TMFC_GUI_B11 = uicontrol('Style', 'pushbutton', 'String', 'BSC LSS after FIR', 'Units', 'normalized', 'Position', [0.06 0.24 0.884 0.05],'FontUnits','normalized','FontSize',0.33);
-    handles.TMFC_GUI_B12 = uicontrol('Style', 'pushbutton', 'String', 'Results', 'Units', 'normalized', 'Position', [0.06 0.16 0.884 0.05],'FontUnits','normalized','FontSize',0.33);
+    handles.TMFC_GUI_B12a = uicontrol('Style', 'pushbutton', 'String', 'Statistics', 'Units', 'normalized', 'Position', [0.06 0.16 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
+    handles.TMFC_GUI_B12b = uicontrol('Style', 'pushbutton', 'String', 'Results', 'Units', 'normalized', 'Position', [0.54 0.16 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
     handles.TMFC_GUI_B13a = uicontrol('Style', 'pushbutton', 'String', 'Open project', 'Units', 'normalized', 'Position', [0.06 0.08 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
     handles.TMFC_GUI_B13b = uicontrol('Style', 'pushbutton', 'String', 'Save project', 'Units', 'normalized', 'Position', [0.54 0.08 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
     handles.TMFC_GUI_B14a = uicontrol('Style', 'pushbutton', 'String', 'Change paths', 'Units', 'normalized', 'Position', [0.06 0.02 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
@@ -127,7 +128,8 @@ if isempty(findobj('Tag', 'TMFC_GUI')) == 1
     set(handles.TMFC_GUI_B9, 'callback', {@BGFC, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B10, 'callback', {@LSS_FIR, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B11, 'callback', {@BSC_after_FIR, handles.TMFC_GUI});   
-    set(handles.TMFC_GUI_B12, 'callback', {@results, handles.TMFC_GUI});               
+    set(handles.TMFC_GUI_B12a, 'callback', {@statistics, handles.TMFC_GUI});               
+    set(handles.TMFC_GUI_B12b, 'callback', {@results, handles.TMFC_GUI});               
     set(handles.TMFC_GUI_B13a, 'callback', {@open_project, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B13b, 'callback', {@save_project, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B14a, 'callback', {@change_paths, handles.TMFC_GUI});
@@ -2308,7 +2310,7 @@ end % Closing ChangePath Function
 % Variables for Settings GUI
 SET_COMPUTING = {'Sequential computing', 'Parallel computing'};
 SET_STORAGE = {'Store temporary files for GLM estimation in RAM', 'Store temporary files for GLM estimation on disk'};
-SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI','Seed-to-voxel only'};
+SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only','Seed-to-voxel only'};
 
 function settings(ButtonH, EventData, TMFC_GUI)
         
@@ -2398,16 +2400,16 @@ function settings(ButtonH, EventData, TMFC_GUI)
 
        C_4 = (TMFC_SET_P4.String(TMFC_SET_P4.Value));
        if strcmp(C_4{1}, 'Seed-to-voxel and ROI-to-ROI')
-           SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI','Seed-to-voxel only'};
+           SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only','Seed-to-voxel only'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  1;
 
-       elseif strcmp(C_4{1}, 'ROI-to-ROI')
-           SET_SEED = {'ROI-to-ROI','Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI'};
+       elseif strcmp(C_4{1}, 'ROI-to-ROI only')
+           SET_SEED = {'ROI-to-ROI only','Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  2;
        elseif strcmp(C_4{1}, 'Seed-to-voxel only')
-           SET_SEED = {'Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI','ROI-to-ROI'};
+           SET_SEED = {'Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  3;
        end
@@ -2476,10 +2478,17 @@ function close_GUI(ButtonH, EventData, TMFC_GUI)
     
 end
 
+%% ===========================[ Statistics ]===================================
+function statistics(ButtonH, EventData, TMFC_GUI)
+    MW_Freeze(1);
+    tmfc_statistics_GUI();
+    MW_Freeze(0);
+end
+
 %% ===========================[ Results ]===================================
 function results(ButtonH, EventData, TMFC_GUI)
     MW_Freeze(1);
-    tmfc_statistics_GUI();
+    tmfc_results_GUI();
     MW_Freeze(0);
 end
 
@@ -2503,8 +2512,8 @@ function MW_Freeze(STATE)
     set([handles.TMFC_GUI_B1, handles.TMFC_GUI_B2, handles.TMFC_GUI_B3, handles.TMFC_GUI_B4,...
                 handles.TMFC_GUI_B5a, handles.TMFC_GUI_B5b, handles.TMFC_GUI_B6, handles.TMFC_GUI_B7,...
                 handles.TMFC_GUI_B8, handles.TMFC_GUI_B9, handles.TMFC_GUI_B10, handles.TMFC_GUI_B11,...
-                handles.TMFC_GUI_B12,handles.TMFC_GUI_B13a,handles.TMFC_GUI_B13b,handles.TMFC_GUI_B14a...
-                handles.TMFC_GUI_B14b], 'Enable', STATE);
+                handles.TMFC_GUI_B12a,handles.TMFC_GUI_B12b,handles.TMFC_GUI_B13a,handles.TMFC_GUI_B13b,...
+                handles.TMFC_GUI_B14a,handles.TMFC_GUI_B14b], 'Enable', STATE);
 
 end      
 
@@ -3088,11 +3097,11 @@ function tmfc = evaluate_file(tmfc)
      
      switch tmfc.defaults.analysis
          case 1
-             SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI','Seed-to-voxel only'};
+             SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only','Seed-to-voxel only'};
          case 2 
-             SET_SEED = {'ROI-to-ROI','Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI'};
+             SET_SEED = {'ROI-to-ROI only','Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI'};
          case 3
-             SET_SEED = {'Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI','ROI-to-ROI'};
+             SET_SEED = {'Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only'};
      end
      
      MW_Freeze(0);
