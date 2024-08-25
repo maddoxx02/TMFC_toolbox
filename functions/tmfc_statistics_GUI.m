@@ -113,6 +113,7 @@ function action_subjects_S0(~,~)
                 M0 = {};
                 warning('Selected *.mat file(s) consist(s) of multiple variables, please select *.mat files each containing only one variable');
             end 
+            
         end
                
         % Updating the GUI 
@@ -121,6 +122,7 @@ function action_subjects_S0(~,~)
             disp('No (.mat) file(s) selected');
             set(RES_L0_CTR, 'String', '0 ROIs x 0 subjects');
             set(RES_L0_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);     
+            M0 = {};
         else
             % Show the number of (.mat) files selected & update GUI
             fprintf('Number of (.mat) files selected are: %d \n', size(M0,1));
@@ -917,15 +919,15 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'off'); %ch
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); %ch
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'off');  %ch
-        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'off');%ch
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');  %ch
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
-        warning('Work in progress. Please wait for future updates');
+        %warning('Work in progress. Please wait for future updates'); %CH
         % Reset Variables 
         M0 = {};
         M1 = {};
@@ -977,17 +979,17 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'off'); %ch
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); %ch
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'off');   %ch          
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');   %ch          
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
         
-        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'off');%ch
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
         
-        warning('Work in progress. Please wait for future updates');
+        %warning('Work in progress. Please wait for future updates'); %ch
         
         % Reset Variables
         M0 = {};
@@ -1163,7 +1165,7 @@ function run(~,~)
                     [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));                   
                     
                     if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
-                        fprintf('\nGenerating Results graph...\n');
+                        fprintf('Generating Results graph...\n');
                         tmfc_results_GUI(thresholded,pval,tval,conval,str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     end
                     clear thresholded pval tval conval;
@@ -1232,8 +1234,12 @@ function flag = CA_controller(~,~)
     flag = 0;
     G1 = (RES_POP_1.String{RES_POP_1.Value}); % Type of Test - paried, one , two 
     G2 = str2num(RES_CONT_val.String);        % Contrast
-    G3 = str2double(RES_ALP_val.String);      % Alpha   
-        
+    try
+        G3 = eval(get(RES_ALP_val, 'String'));    % Alpha
+    catch
+        G3 = NaN;
+    end
+    
      if isempty(G2)
          warning('Please enter numeric values for contrasts');
      else
@@ -1243,7 +1249,6 @@ function flag = CA_controller(~,~)
              elseif length(G2) > 2
                  warning('Number of Contrast values cannot be greater than TWO, Please re-enter contrast values for computation');
              else
-                 fprintf('\nContrast values [%d , %d] accepted for computation\n',G2(1, 1), G2(1,2));
                  
                  % CONTD with Alpha verification
                   if isnan(G3)
@@ -1252,7 +1257,7 @@ function flag = CA_controller(~,~)
                     if G3 > 1 || G3 < 0
                         warning('Please re-enter Alpha value between (0.0, 1.0]');
                     else
-                        fprintf('\nAlpha value of [%d] is accepted for computation\n', G3);
+                        fprintf('\n\nContrast values [%d , %d] & Alpha value of [%d] is accepted for computation\n',G2(1, 1), G2(1,2), G3);
                         flag = 1;
                     end
                  end
@@ -1261,7 +1266,7 @@ function flag = CA_controller(~,~)
             if length(G2) >=2
                 warning('Number of Contrast values cannot exceed ONE, Please re-enter contrast value for computation');
             else
-                fprintf('Contrast values [%d] accepted for computation\n',G2(1,1));
+                
                 % CONTD with Alpha verification
                  if isnan(G3)
                     warning('Please enter Alpha value for computation');
@@ -1269,7 +1274,7 @@ function flag = CA_controller(~,~)
                     if (G3 > 1) || (G3 < 0)
                         warning('Please re-enter Alpha value between (0.0, 1.0]');
                     else
-                        fprintf('Alpha value of [%d] is accepted for computation\n', G3);
+                        fprintf('Contrast values [%d] & Alpha value of [%d] is accepted for computation\n',G2(1,1), G3);
                         flag = 1;
                     end
                  end
