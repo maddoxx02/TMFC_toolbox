@@ -23,12 +23,12 @@ RES_L1_CTR = uicontrol(RES_GUI, 'Style', 'text','String', '0 ROIs x 0 subjects',
 RES_L2_CTR = uicontrol(RES_GUI, 'Style', 'text','String', '0 ROIs x 0 subjects','Units', 'normalized', 'Position',[0.52 0.51 0.44 0.04],'fontunits','normalized', 'fontSize', 0.57, 'HorizontalAlignment','center','backgroundcolor','w','ForegroundColor',[0.773, 0.353, 0.067],'visible', 'off');
 
 % "Select & Remove" file buttons for each case
-RES_L0_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.045 0.45 0.445 0.054],'fontunits','normalized', 'fontSize', 0.36, 'tag', 'One Sample');
-RES_L0_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.52 0.45 0.445 0.054],'fontunits','normalized', 'fontSize', 0.36);
-RES_L1_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.045 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off');
-RES_L1_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.275 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off');
-RES_L2_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.52 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off');
-RES_L2_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.75 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off');
+RES_L0_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.045 0.45 0.445 0.054],'fontunits','normalized', 'fontSize', 0.36, 'UserData', struct('select','one_samp_sel'));
+RES_L0_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.52 0.45 0.445 0.054],'fontunits','normalized', 'fontSize', 0.36, 'UserData', struct('remove','one_samp_rem'));
+RES_L1_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.045 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off','UserData',struct('select', 'left_samp_sel'));
+RES_L1_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.275 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off', 'UserData', struct('remove','left_samp_rem'));
+RES_L2_SEL = uicontrol(RES_GUI,'Style','pushbutton','String', 'Select','Units', 'normalized','Position',[0.52 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off','UserData', struct('select','right_samp_sel'));
+RES_L2_REM = uicontrol(RES_GUI,'Style','pushbutton','String', 'Remove','Units', 'normalized','Position',[0.75 0.45 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36, 'visible', 'off', 'UserData', struct('remove','right_samp_rem'));
 
 % Boxes & Layout for Alpha & threshold values
 RES_CONT = uipanel(RES_GUI,'Units', 'normalized','Position',[0.046 0.37 0.44 0.07],'HighLightColor',[0.78 0.78 0.78],'BorderType', 'line','BackgroundColor','w');
@@ -52,101 +52,116 @@ RES_RUN = uicontrol(RES_GUI, 'Style', 'pushbutton', 'String', 'Run','Units', 'no
 % Callback actions
 set(RES_POP_1, 'callback', @test_type);
 set(RES_THRES_POP, 'callback', @threshold_type);
-set(RES_L0_SEL, 'callback', @action_subjects_S0);
-set(RES_L1_SEL, 'callback', @test);
-set(RES_L2_SEL, 'callback', @test);
-set(RES_L0_REM, 'callback', @action_remove_0);
-set(RES_L1_REM, 'callback', @action_remove_1);
-set(RES_L2_REM, 'callback', @action_remove_2);
 set(RES_lst_0, 'callback', @live_select_0)
 set(RES_lst_1, 'callback', @live_select_1)
 set(RES_lst_2, 'callback', @live_select_2)
+set(RES_L0_SEL, 'callback', @(src, event) selection_caller(get(src, 'UserData')));
+set(RES_L1_SEL, 'callback', @(src, event) selection_caller(get(src, 'UserData')));
+set(RES_L2_SEL, 'callback', @(src, event) selection_caller(get(src, 'UserData')));
+set(RES_L0_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
+set(RES_L1_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
+set(RES_L2_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
 set(RES_RUN, 'callback', @run);
 
 M0 = {}; % variable to store the matrices for One-sample t-test
 M1 = {}; % variable to store the matrices set 1 Paired & Two-sample t-test
 M2 = {}; % variable to store the matrices set 2 Paired & Two-sample t-test
 
-test_thresh = '';
 % Variables to store present selection of matrices from list
 selection_0 = '';
 selection_1 = '';
 selection_2 = '';
-matrices = 0;
+matrices_0 = 0;
+matrices_1 = 0;
+matrices_2 = 0;
 
-% Selection button for "One-sample t-test" 
-function action_subjects_S0(~,~)
+% Function to select respective call button
+function selection_caller(data)
+% Format: file_selector(M_VAR, matrix, disp_box, disp_str)
+    switch (data.select)
+        case 'one_samp_sel'
+            file_selector(M0, matrices_0, RES_lst_0, RES_L0_CTR,'one_samp_sel');
+            
+        case 'left_samp_sel'
+            file_selector(M1, matrices_1, RES_lst_1, RES_L1_CTR,'left_samp_sel');
+            
+        case 'right_samp_sel'
+            file_selector(M2, matrices_2, RES_lst_2, RES_L2_CTR,'right_samp_sel');
+    end
+end
+% Function to Perform selection Action
+function file_selector(M_VAR, matrix, disp_box, disp_str, case_maker)
     
-    % First case: First time selection
-    if isempty(M0)
+   % First case: First time selection
+    if isempty(M_VAR)
         
         % Checking if there exist pre-selected (.mat) files
         
-        M0 = selector();    % Select (.mat) files
-        M0 = unique(M0);    % Remove duplicates
+        M_VAR = selector();    % Select (.mat) files
+        M_VAR = unique(M_VAR);    % Remove duplicates
 
         % If (.mat) files have been selected, perform multiple variable and dimension checks
-        if ~isempty(M0)          
+        if ~isempty(M_VAR)          
                             
-            if multi_check(M0) == 0   % Check if (.mat) file consists of multiple variables
+            if multi_check(M_VAR) == 0   % Check if (.mat) file consists of multiple variables
 
                 % Continue if the selected files do not contain multiple variables
-                for i = 1:size(M0,1)
-                    M(i).m = struct2array(load(M0{i,:}));
+                for i = 1:size(M_VAR,1)
+                    M(i).m = struct2array(load(M_VAR{i,:}));
                 end
     
                 try
-                    matrices = cat(3,M(:).m);
-                    if size(matrices,1) ~= size(matrices,2)
+                    matrix = cat(3,M(:).m);
+                    if size(matrix,1) ~= size(matrix,2)
                         warning('Matrices are not square')
                         clear M matrices   
-                        M0 = {};
+                        M_VAR = {};
                     end
                 catch
                     warning('Matrices have different dimensions')
                     clear M  
-                    M0 = {};
+                    M_VAR = {};
                 end
                 
-            elseif multi_check(M0) == 1
+            elseif multi_check(M_VAR) == 1
                 % Warning if file has MULTIPLE VARIABLES within 
-                M0 = {};
+                M_VAR = {};
                 warning('Selected *.mat file(s) consist(s) of multiple variables, please select *.mat files each containing only one variable');
             end 
             
         end
                
         % Updating the GUI 
-        if isempty(M0{1})
+        if isempty(M_VAR{1}) % exist('varible_name','var')
             % If all files selection was rejected during checks, reset GUI
             disp('No (.mat) file(s) selected');
-            set(RES_L0_CTR, 'String', '0 ROIs x 0 subjects');
-            set(RES_L0_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);     
-            M0 = {};
+            set(disp_str, 'String', '0 ROIs x 0 subjects');
+            set(disp_str, 'ForegroundColor',[0.773, 0.353, 0.067]);     
+            M_VAR = {};
         else
             % Show the number of (.mat) files selected & update GUI
-            fprintf('Number of (.mat) files selected are: %d \n', size(M0,1));
-            set(RES_lst_0,'String', M0);
-            set(RES_lst_0,'Value', []);
+            fprintf('Number of (.mat) files selected are: %d \n', size(M_VAR,1));
+            set(disp_box,'String', M_VAR);
+            set(disp_box,'Value', []);
 
             % Update the ROI x ROI x Subjects number
-            set(RES_L0_CTR, 'String', strcat(num2str(size(matrices,2)), ' ROIs x',32, num2str(size(matrices,3)),' subjects'));
-            set(RES_L0_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI       
+            set(disp_str, 'String', strcat(num2str(size(matrix,2)), ' ROIs x',32, num2str(size(matrix,3)),' subjects'));
+            set(disp_str, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI       
         end
     
     % Second case: Add new matrices
     else              
-        new_M0 = selector();        % Select new files via function
+        new_M_VAR = selector();        % Select new files via function
         
         % If new files are selected then proceed 
-        if ~isempty(new_M0)
+        if ~isempty(new_M_VAR)
                
             % Check for multiple variables within selected files   
-            if multi_check(new_M0) ~= 1        
+            if multi_check(new_M_VAR) ~= 1        
                 
                 % Continue if the selected files do not contain multiple variables
-                for i = 1:size(new_M0,1)
-                    M(i).m = struct2array(load(new_M0{i,:}));
+                for i = 1:size(new_M_VAR,1)
+                    M(i).m = struct2array(load(new_M_VAR{i,:}));
                 end
     
                 try
@@ -154,30 +169,30 @@ function action_subjects_S0(~,~)
                     if size(new_matrices,1) ~= size(new_matrices,2)
                         warning('Matrices are not square')
                         clear M 
-                        new_M0 = {};
+                        new_M_VAR = {};
                     end
                 catch
                     warning('Matrices have different dimensions')
                     clear M  
-                    new_M0 = {};
+                    new_M_VAR = {};
                 end
                 
                 % Concatenate old and new matrices
                 try
-                    matrices = cat(3,matrices,new_matrices);
-                    M0 = vertcat(M0, new_M0);
+                    matrix = cat(3,matrix,new_matrices);
+                    M_VAR = vertcat(M_VAR, new_M_VAR);
                     %Updating the GUI 
-                    fprintf('Number of (.mat) files selected are: %d \n', size(new_M0,1));
-                    set(RES_lst_0,'String', M0);
-                    set(RES_lst_0,'Value', []);
+                    fprintf('Number of (.mat) files selected are: %d \n', size(new_M_VAR,1));
+                    set(disp_box,'String', M_VAR);
+                    set(disp_box,'Value', []);
         
                     % Update the ROI x ROI x Subjects number
-                    set(RES_L0_CTR, 'String', strcat(num2str(size(matrices,2)), ' ROIs x',32, num2str(size(matrices,3)),' subjects'));
-                    set(RES_L0_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI       
-                    clear M new_M0
+                    set(disp_str, 'String', strcat(num2str(size(matrix,2)), ' ROIs x',32, num2str(size(matrix,3)),' subjects'));
+                    set(disp_str, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI       
+                    clear M new_M_VAR
                 catch
                     warning('Matrices have different number of ROIs');
-                    clear new_matrices new_M0 M
+                    clear new_matrices new_M_VAR M
                 end
             
             else
@@ -188,703 +203,112 @@ function action_subjects_S0(~,~)
            disp('No files added');          
         end
     end
+    
+      switch (case_maker)
+      
+      case 'one_samp_sel'
+          M0 = M_VAR;
+          matrices_0 = matrix;
 
+      case 'left_samp_sel'
+          M1 = M_VAR;
+          matrices_1 = matrix;
+          
+      case 'right_samp_sel'
+          M2 = M_VAR;
+          matrices_2 = matrix;
+          
+      end
+       
+    
 end
 
-function test(~,~)
-    
-    tt = gco();
-    %assignin('base', 'tt', tt);
-    
-    %guidata(handles.TMFC_GUI, handles);
-    
-    %guidata(handles.TMFC_GUI, handles);
 
-    disp('test');
-
-    %fprintf('%s Variable',VAR_1);
-    %fprintf('%s GUI',GUI_Tag);
-    %fprintf('%s Matrices',Mat_Var);
-end
-
-% Selection button for "Paired /Two-sample T-Test" - Set 1 Matrices
-function action_subjects_S1(~,~)
-    
-    % Primary case: First time selection of (,mat) files
-    if isempty(M1)
-        
-        %Checking if there exist pre-selected (.mat) files
-        
-        M1 = selector();    % Select (.mat) files
-        M1 = unique(M1);    % Remove duplicates
-
-        % If (.mat) files has been selected, perform, multiple variable, dimension and ROI checks
-        if ~isempty(M1)
+% Function to select respective remove button
+function remove_caller(data)
+    switch (data.remove)
+        case 'one_samp_rem'
+            file_remove(selection_0, M0, RES_lst_0, RES_L0_CTR,'one_samp_sel');
             
-            F1 = multi_check(M1);  % Check if (.mat) file consists of multiple variables
+        case 'left_samp_rem'
+            file_remove(selection_1, M1, RES_lst_1, RES_L1_CTR,'left_samp_sel');
             
-            % If there are no multiple variables (F1 = 0), then continue
-            % with verification of Dimensionality
-            if F1 ~= 1 
-
-                % Check for consistent dimensions (2D vs 3D) accross all
-                % selected files (Selection of 2D or 3D is based on the
-                % first selected file)
-                F2 = dimension_check(M1);
-
-                % If the selected files are of consistent dimensions then
-                % proceed
-                if F2 ~= 1
-
-                    % Check if the selected files have consistent ROIs
-                    % (Internally for selection)
-                    F3 = ROI_check(M1,1,[]);
-
-                   % If all files have consistent dimensions, add files to
-                   % main list for full usage
-                   if F3 == 0 
-                       len_files = size(M1);
-                   else
-                       % Raise warning ROI dimensions are NOT EQUAL 
-                       M1 = {};
-                       warning('The selected matrices have inconsistent ROI x ROI dimensions, please select again')
-                   end
-                   
-                else
-                    % Raise warning if 2D - 3D dimensions are NOT EQUAL 
-                    M1 = {};
-                    warning('The Selected matrics have inconsistent dimensions, Please select matrices with consistent dimensions');
-                end
-                
-            else
-                % Raise warning if file has MULTIPLE VARIABLES within
-                M1 = {};
-                warning('The .mat files selected consists of multiple variables. Please select .mat files with individual variables');
-            end 
-        end
-        
-        
-        % Updating the GUI 
-        if isempty(M1)
-            % If all files selection was rejected during checks, reset GUI
-            disp('No (.mat) file(s) selected');
-            set(RES_L1_CTR, 'String', '0 ROIs x 0 subjects');
-            set(RES_L1_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);
-        
-        else
-            % Show the number of (.mat) files selected & update GUI
-            fprintf('Number of (.mat) files selected are: %d \n', len_files(1));
-            set(RES_lst_1,'String', M1);
-            set(RES_lst_1,'Value', []);
-
-            % Update the ROI x ROI x Subjects counter under each case
-            % Partial load the first file to update 
-            matObj = matfile(M1{1,:});
-            S = whos(matObj);
-            dims = S.size;
-            roi_sub = [];
-
-            % Update ROI x Subjects, for 2D case (ROI x ROI):
-            if length(dims) == 2
-                M1_ss_size = size(M1);                  % Size of selected list
-                roi_sub = [dims(1), M1_ss_size(1)];     % Store dimensions as ROI x Subjects
-                set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-
-            elseif length(dims) == 3
-            % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-                subs = 0;                               % variable to store size of subs
-                for i = 1:length(M1)                    % loop accross all files
-                    matObj = matfile(M1{i,:});          % Extract size of each variable per iteration
-                    temp = whos(matObj);
-                    temp_dim = temp.size;
-                    subs = subs + temp.size(3);
-                end
-                
-                roi_sub = [dims(1), subs];              % Store ROI and subjects lengths
-                set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
-
-            else
-                % Unlikely event, if this occurs, then there is an issue
-                % with the type of files uploaded (mostly, it may not be
-                % 2D or 3D formats. 
-                disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-            end        
-        end
- 
-    else
-        
-    % Secondary case: Post - intialization selection of (,mat) files
-        
-        %M1_copy = M1;
-        M1_size = size(M1);         % Store existing size of files
-        
-        
-        new_add = selector();       % Select new files via function
-        
-        % If new files are selected then proceed 
-        if ~isempty(new_add)
-            
-            new_add = unique(new_add);          % Filter newly added files to remove duplicates
-            size_new_add = size(new_add);       % Store size of the newly added files
-            
-            F_in_1 = multi_check(new_add);        % Check for multiple variables within selected files
-            
-            % Proceed if there are no multiple files present in selection
-            if F_in_1 ~= 1                       
-                
-                % Check for consistent dimensions in the selected files
-                F_in_2 = dimension_check(new_add);
-                
-                % Proceed if the files have consistent dimensions
-                if F_in_2 ~= 1
-                    
-                    % Check for consistent ROI x ROI dimensions in the 
-                    % newly selected files (Internally)
-                    F_in_3a = ROI_check(new_add,1,[]);
-                    
-                    
-                    % Proceed if the ROI x ROI files have consistent
-                    % dimensions
-                    if F_in_3a == 0
-                    
-                        % Check for consistent ROI x ROI dimensions between
-                        % Primary Selection & New Selection
-                        F_in_3b = ROI_check(M1,2,new_add);
-                    
-                        % If they are consistent proceed with concatination
-                        if F_in_3b == 0
-
-                            % if F_in_3b == 0 - execute the rest
-
-                            % This block checks if the Primary selection of
-                            % files have consistent dimensions with Secondary
-                            % selection of files
-
-                            % Extract dimensions of Primary selection of files
-                            matObj = matfile(M1{1,:});
-                            M1_S1 = whos(matObj);
-                            s1 = M1_S1.size;
-
-                            % Extract dimensions for Secondary selection of
-                            % files
-                            matObj = matfile(new_add{1,:});
-                            M1_S2 = whos(matObj);
-                            s2 = M1_S2.size;
-
-                            % If Primary and Secondary Selections are equal
-                            % then proceed
-
-                            if length(s1) == length(s2)
-
-
-                               M1 = vertcat(M1, new_add);                   % Concatenate files 
-                               new_ones = size(unique(M1)) - M1_size(1);    % Calcualte newly added size (after removing duplicates ~if any)
-                               M1 = unique(M1);
-
-                               % If No newly added files then show message
-                               if new_ones(1) == 0
-                                   warning('Newly Selected .mat files are already present in the list, no new files added');
-                                   set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]);
-
-                               else
-
-                               % If there exist New additions, then show message 
-                                    fprintf('\nNumber of newly added (.mat) files: %d \n', new_ones(1));
-
-                                    % Extract dimension
-                                    matObj = matfile(M1{1,:});
-                                    S = whos(matObj);
-                                    dims = S.size;
-
-                                    roi_sub = [];   % Variable to store dimensions for each case
-
-                                    % Update ROI x Subjects, for 2D case (ROI x ROI):
-                                    if length(dims) == 2
-                                        M1_ss_size = size(M1);                  % Size of selected list
-                                        roi_sub = [dims(1), M1_ss_size(1)];     % Store dimensions as ROI x Subjects
-                                        set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                                        set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]);   % Update GUI 
-
-                                    elseif length(dims) == 3
-                                        % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-                                        subs = 0;                           % Variable to store size of subs
-                                        for i = 1:length(M1)                % loop accross all files
-                                            matObj = matfile(M1{i,:});      % Extract size of each variable per iteration
-                                            temp = whos(matObj);
-                                            temp_dim = temp.size;
-                                            subs = subs + temp.size(3);
-                                        end
-                                        roi_sub = [dims(1), subs];          % Store ROI and subjects lengths
-                                        set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                                        set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]);   % Update GUI
-                                    else
-                                         % Unlikely event, if this occurs, then there is an issue
-                                         % with the type of files uploaded (mostly, it may not be
-                                         % 2D or 3D formats. 
-                                         disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-                                    end     
-
-                                    % Update Results GUI
-                                   set(RES_lst_1,'String', M1);
-                                   set(RES_lst_1,'Value', []);
-                               end
-                            else
-                                warning('Select .mat files are of incompatible dimensions');
-                            end
-                        else
-                            warning('Selected (.mat) file(s) have inconsistent ROI x ROI dimensions, please select (.mat) files with consistent dimensions');
-                        end
-                    else
-                        warning('Selected (.mat) file(s) have inconsistent ROI x ROI dimensions, please select (.mat) files with consistent dimensions');
-                    end
-                    
-                else
-                    warning('Selected (.mat) file(s) are of inconsistent dimensions, please select (.mat) with consistent dimensions');
-                end
-            else
-                warning('Selected *.mat file(s) consist(s) of multiple variables, please select *.mat files each containing only one variable');
-
-            end
-            
-        else
-           % If no new files are selected, show statement & no updates
-           disp('No new (.mat) files added');
-           
-        end
+        case 'right_samp_rem'
+            file_remove(selection_2, M2, RES_lst_2, RES_L2_CTR,'right_samp_sel');
     end
 end
-
-% Selection button for "Paired /Two-sample T-Test" - Set 2 Matrices
-function action_subjects_S2(~,~)
-    
-    % Primary case: First time selection of (,mat) files
-    if isempty(M2)
-        
-        %Checking if there exist pre-selected (.mat) files
-        
-        M2 = selector();    % Select (.mat) files
-        M2 = unique(M2);    % Remove duplicates
-
-        % If (.mat) files has been selected, perform, multiple variable, dimension and ROI checks
-        if ~isempty(M2)
-            
-            F1 = multi_check(M2);  % Check if (.mat) file consists of multiple variables
-            
-            % If there are no multiple variables (F1 = 0), then continue
-            % with verification of Dimensionality
-            if F1 ~= 1 
-
-                % Check for consistent dimensions (2D vs 3D) accross all
-                % selected files (Selection of 2D or 3D is based on the
-                % first selected file)
-                F2 = dimension_check(M2);
-
-                % If the selected files are of consistent dimensions then
-                % proceed
-                if F2 ~= 1
-
-                    % Check if the selected files have consistent ROIs
-                    % (Internally for selection)
-                    F3 = ROI_check(M2,1,[]);
-
-                   % If all files have consistent dimensions, add files to
-                   % main list for full usage
-                   if F3 == 0 
-                       len_files = size(M2);
-                   else
-                       % Raise warning ROI dimensions are NOT EQUAL 
-                       M2 = {};
-                       warning('The selected matrices have inconsistent ROI x ROI dimensions, please select again')
-                   end
-                   
-                else
-                    % Raise warning if 2D - 3D dimensions are NOT EQUAL 
-                    M2 = {};
-                    warning('The Selected matrics have inconsistent dimensions, Please select matrices with consistent dimensions');
-                end
-                
-            else
-                % Raise warning if file has MULTIPLE VARIABLES within
-                M2 = {};
-                warning('The .mat files selected consists of multiple variables. Please select .mat files with individual variables');
-            end 
-        end
-        
-        
-        % Updating the GUI 
-        if isempty(M2)
-            % If all files selection was rejected during checks, reset GUI
-            disp('No (.mat) file(s) selected');
-            set(RES_L2_CTR, 'String', '0 ROIs x 0 subjects');
-            set(RES_L2_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);
-        
-        else
-            % Show the number of (.mat) files selected & update GUI
-            fprintf('Number of (.mat) files selected are: %d \n', len_files(1));
-            set(RES_lst_2,'String', M2);
-            set(RES_lst_2,'Value', []);
-
-            % Update the ROI x ROI x Subjects counter under each case
-            % Partial load the first file to update 
-            matObj = matfile(M2{1,:});
-            S = whos(matObj);
-            dims = S.size;
-            roi_sub = [];
-
-            % Update ROI x Subjects, for 2D case (ROI x ROI):
-            if length(dims) == 2
-                M2_ss_size = size(M2);                  % Size of selected list
-                roi_sub = [dims(1), M2_ss_size(1)];     % Store dimensions as ROI x Subjects
-                set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-
-            elseif length(dims) == 3
-            % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-                subs = 0;                               % variable to store size of subs
-                for i = 1:length(M2)                    % loop accross all files
-                    matObj = matfile(M2{i,:});          % Extract size of each variable per iteration
-                    temp = whos(matObj);
-                    temp_dim = temp.size;
-                    subs = subs + temp.size(3);
-                end
-                
-                roi_sub = [dims(1), subs];              % Store ROI and subjects lengths
-                set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
-
-            else
-                % Unlikely event, if this occurs, then there is an issue
-                % with the type of files uploaded (mostly, it may not be
-                % 2D or 3D formats. 
-                disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-            end        
-        end
- 
-    else
-        
-    % Secondary case: Post - intialization selection of (,mat) files
-        
-        %M2_copy = M2;
-        M2_size = size(M2);         % Store existing size of files
-        
-        
-        new_add = selector();       % Select new files via function
-        
-        % If new files are selected then proceed 
-        if ~isempty(new_add)
-            
-            new_add = unique(new_add);          % Filter newly added files to remove duplicates
-            size_new_add = size(new_add);       % Store size of the newly added files
-            
-            F_in_1 = multi_check(new_add);        % Check for multiple variables within selected files
-            
-            % Proceed if there are no multiple files present in selection
-            if F_in_1 ~= 1                       
-                
-                % Check for consistent dimensions in the selected files
-                F_in_2 = dimension_check(new_add);
-                
-                % Proceed if the files have consistent dimensions
-                if F_in_2 ~= 1
-                    
-                    % Check for consistent ROI x ROI dimensions in the 
-                    % newly selected files (Internally)
-                    F_in_3a = ROI_check(new_add,1,[]);
-                    
-                    
-                    % Proceed if the ROI x ROI files have consistent
-                    % dimensions
-                    if F_in_3a == 0
-                    
-                        % Check for consistent ROI x ROI dimensions between
-                        % Primary Selection & New Selection
-                        F_in_3b = ROI_check(M2,2,new_add);
-                    
-                        % If they are consistent proceed with concatination
-                        if F_in_3b == 0
-
-                            % if F_in_3b == 0 - execute the rest
-
-                            % This block checks if the Primary selection of
-                            % files have consistent dimensions with Secondary
-                            % selection of files
-
-                            % Extract dimensions of Primary selection of files
-                            matObj = matfile(M2{1,:});
-                            M2_S1 = whos(matObj);
-                            s1 = M2_S1.size;
-
-                            % Extract dimensions for Secondary selection of
-                            % files
-                            matObj = matfile(new_add{1,:});
-                            M2_S2 = whos(matObj);
-                            s2 = M2_S2.size;
-
-                            % If Primary and Secondary Selections are equal
-                            % then proceed
-
-                            if length(s1) == length(s2)
+% Function to perform removal of files from Lists
+function file_remove(sel_var, M_VAR, disp_box,disp_str,case_maker)
 
 
-                               M2 = vertcat(M2, new_add);                   % Concatenate files 
-                               new_ones = size(unique(M2)) - M2_size(1);    % Calcualte newly added size (after removing duplicates ~if any)
-                               M2 = unique(M2);
-
-                               % If No newly added files then show message
-                               if new_ones(1) == 0
-                                   warning('Newly Selected .mat files are already present in the list, no new files added');
-
-                               else
-
-                               % If there exist New additions, then show message 
-                                    fprintf('\nNumber of newly added (.mat) files: %d \n', new_ones(1));
-
-                                    % Extract dimension
-                                    matObj = matfile(M2{1,:});
-                                    S = whos(matObj);
-                                    dims = S.size;
-
-                                    roi_sub = [];   % Variable to store dimensions for each case
-
-                                    % Update ROI x Subjects, for 2D case (ROI x ROI):
-                                    if length(dims) == 2
-                                        M2_ss_size = size(M2);                  % Size of selected list
-                                        roi_sub = [dims(1), M2_ss_size(1)];     % Store dimensions as ROI x Subjects
-                                        set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                                        set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]);   % Update GUI 
-
-                                    elseif length(dims) == 3
-                                        % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-                                        subs = 0;                           % Variable to store size of subs
-                                        for i = 1:length(M2)                % loop accross all files
-                                            matObj = matfile(M2{i,:});      % Extract size of each variable per iteration
-                                            temp = whos(matObj);
-                                            temp_dim = temp.size;
-                                            subs = subs + temp.size(3);
-                                        end
-                                        roi_sub = [dims(1), subs];          % Store ROI and subjects lengths
-                                        set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                                        set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]);   % Update GUI
-                                    else
-                                         % Unlikely event, if this occurs, then there is an issue
-                                         % with the type of files uploaded (mostly, it may not be
-                                         % 2D or 3D formats. 
-                                         disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-                                    end     
-
-                                    % Update Results GUI
-                                   set(RES_lst_2,'String', M2);
-                                   set(RES_lst_2,'Value', []);
-                               end
-                            else
-                                warning('Select .mat files are of incompatible dimensions');
-                            end
-                        elseif F_in_3b == 2
-                            warning('The Previously selected file has different dimensions than the present selection, Please remove the previously selected file with different dimensions and select again ');
-                        else
-                            warning('Selected (.mat) file(s) have inconsistent ROI x ROI dimensions, please select (.mat) files with consistent dimensions');
-                        end
-                    else
-                        warning('Selected (.mat) file(s) have inconsistent ROI x ROI dimensions, please select (.mat) files with consistent dimensions');
-                    end
-                    
-                else
-                    warning('Selected (.mat) file(s) are of inconsistent dimensions, please select (.mat) with consistent dimensions');
-                end
-            else
-                warning('Selected *.mat file(s) consist(s) of multiple variables, please select *.mat files each containing only one variable');
-
-            end
-            
-        else
-           % If no new files are selected, show statement & no updates
-           disp('No new (.mat) files added');
-           
-        end
-    end
-end
-
-
-% Remove button for "One-sample T-Test" 
-function action_remove_0(~,~)
-   if isempty(selection_0) && isempty(M0)
+   if isempty(sel_var) && isempty(M_VAR)
        warning('There are no files present to remove, please select .mat files to perform Results analysis');
-   elseif isempty(selection_0) && ~isempty(M0)
+   elseif isempty(sel_var) && ~isempty(M_VAR)
         warning('There are no selected matrices to remove from the list, please select matrices once again');
    else
-       M0(selection_0,:) = [];
-       holder = size(selection_0);
+       disp(M_VAR);
+       disp(sel_var);
+       M_VAR(sel_var,:) = [];
+       holder = size(sel_var);
        fprintf('Number of (.mat) files removed are: %d \n', holder(2));
               
-       set(RES_lst_0,'Value', []);
-       set(RES_lst_0,'String', M0);
-       selection_0 = {};
+       set(disp_box,'Value', []);
+       set(disp_box,'String', M_VAR);
+       sel_var = {};
        
-       if ~isempty(M0)           
+       if ~isempty(M_VAR)           
             % Update the ROI x ROI x Subjects counter under each case
             % Partial load the first file to update 
-            matObj = matfile(M0{1,:});
+            matObj = matfile(M_VAR{1,:});
             S = whos(matObj);
             dims = S.size;
             roi_sub = [];
            
             % Update ROI x Subjects, for 2D case (ROI x ROI):
             if length(dims) == 2
-                M0_ss_size = size(M0);                  % Size of selected list
+                M0_ss_size = size(M_VAR);                  % Size of selected list
                 roi_sub = [dims(1), M0_ss_size(1)];     % Store dimensions as ROI x Subjects
-                set(RES_L0_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L0_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
+                set(disp_str, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
+                set(disp_str, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
 
             elseif length(dims) == 3
             % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
                 subs = 0;                               % variable to store size of subs
-                for i = 1:length(M0)                    % loop accross all files
-                    matObj = matfile(M0{i,:});          % Extract size of each variable per iteration
+                for i = 1:length(M_VAR)                    % loop accross all files
+                    matObj = matfile(M_VAR{i,:});          % Extract size of each variable per iteration
                     temp = whos(matObj);
                     temp_dim = temp.size;
                     subs = subs + temp.size(3);
                 end
 
                 roi_sub = [dims(1), subs];              % Store ROI and subjects lengths
-                set(RES_L0_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-                set(RES_L0_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
+                set(disp_str, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
+                set(disp_str, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
 
             else
                 % Unlikely event, if this occurs, then there is an issue
                 % with the type of files uploaded (mostly, it may not be
                 % 2D or 3D formats. 
-                disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
+                disp('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
             end   
        end
    end
-  if isempty(M0)
-        set(RES_L0_CTR, 'String', '0 ROIs x 0 subjects');
-        set(RES_L0_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);
-   end
+  if isempty(M_VAR)
+        set(disp_str, 'String', '0 ROIs x 0 subjects');
+        set(disp_str, 'ForegroundColor',[0.773, 0.353, 0.067]);
+  end
    
-   
-end
-
-% Remove button for "Paired /Two-sample T-Test" - Set 1 Matrices
-function action_remove_1(~,~)
-   if isempty(selection_1) && isempty(M1)
-       warning('There are no files present to remove, please select .mat files to perform Results analysis');
-   elseif isempty(selection_1) && ~isempty(M1)
-        warning('There are no selected files to remove, please select files once again');
-   else
-       M1(selection_1,:) = [];
-       holder = size(selection_1);
-       fprintf('Number of (.mat) files removed are: %d \n', holder(2));
-       
-       set(RES_lst_1,'Value',[]);    
-       set(RES_lst_1,'String', M1);
-       selection_1 = {};
-              
-       if ~isempty(M1)
-        % Update the ROI x ROI x Subjects counter under each case
-        % Partial load the first file to update 
-        matObj = matfile(M1{1,:});
-        S = whos(matObj);
-        dims = S.size;
-        roi_sub = [];
-
-        % Update ROI x Subjects, for 2D case (ROI x ROI):
-        if length(dims) == 2
-            M1_ss_size = size(M1);                  % Size of selected list
-            roi_sub = [dims(1), M1_ss_size(1)];     % Store dimensions as ROI x Subjects
-            set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-            set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-
-        elseif length(dims) == 3
-        % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-            subs = 0;                               % variable to store size of subs
-            for i = 1:length(M1)                    % loop accross all files
-                matObj = matfile(M1{i,:});          % Extract size of each variable per iteration
-                temp = whos(matObj);
-                temp_dim = temp.size;
-                subs = subs + temp.size(3);
-            end
-
-            roi_sub = [dims(1), subs];              % Store ROI and subjects lengths
-            set(RES_L1_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-            set(RES_L1_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
-
-        else
-            % Unlikely event, if this occurs, then there is an issue
-            % with the type of files uploaded (mostly, it may not be
-            % 2D or 3D formats. 
-            disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-        end              
-       end
-   end
-   
-   if isempty(M1)
-        set(RES_L1_CTR, 'String', '0 ROIs x 0 subjects');
-        set(RES_L1_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);
-   end
-   
-end
-
-% Remove button for "Paired /Two-sample T-Test" - Set 2 Matrices
-function action_remove_2(~,~)
-   if isempty(selection_2) && isempty(M2)
-       warning('There are no files present to remove, please select .mat files to perform Results analysis');
-   elseif isempty(selection_2) && ~isempty(M2)
-        warning('There are no selected matrices to remove from the list, please select matrices once again');
-   else
-       M2(selection_2,:) = [];   
-       holder = size(selection_2);
-       fprintf('Number of (.mat) files removed are: %d \n', holder(2));
-       
-       set(RES_lst_2, 'Value', []);
-       set(RES_lst_2,'String', M2);
-       selection_2 = {};
-       
-       
-       if ~isempty(M2)
-           % Update the ROI x ROI x Subjects counter under each case
-        % Partial load the first file to update 
-        matObj = matfile(M2{1,:});
-        S = whos(matObj);
-        dims = S.size;
-        roi_sub = [];
-
-        % Update ROI x Subjects, for 2D case (ROI x ROI):
-        if length(dims) == 2
-            M2_ss_size = size(M2);                  % Size of selected list
-            roi_sub = [dims(1), M2_ss_size(1)];     % Store dimensions as ROI x Subjects
-            set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-            set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-
-        elseif length(dims) == 3
-        % Update ROI x Subjects, for 3D case (ROI x ROI x Subjects): 
-            subs = 0;                               % variable to store size of subs
-            for i = 1:length(M2)                    % loop accross all files
-                matObj = matfile(M2{i,:});          % Extract size of each variable per iteration
-                temp = whos(matObj);
-                temp_dim = temp.size;
-                subs = subs + temp.size(3);
-            end
-
-            roi_sub = [dims(1), subs];              % Store ROI and subjects lengths
-            set(RES_L2_CTR, 'String', strcat(num2str(roi_sub(1)), ' ROIs x',32, num2str(roi_sub(2)),' subjects'));
-            set(RES_L2_CTR, 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI
-
-        else
-            % Unlikely event, if this occurs, then there is an issue
-            % with the type of files uploaded (mostly, it may not be
-            % 2D or 3D formats. 
-            disp('You are sick, the files must be ROI x ROI x Subjects format & dimensions');
-        end 
-       end
-   end
-   
-   if isempty(M2)
-        set(RES_L2_CTR, 'String', '0 ROIs x 0 subjects');
-        set(RES_L2_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]);
-   end
+  switch (case_maker)
+      
+      case 'one_samp_sel'
+          M0 = M_VAR;
+          
+      case 'left_samp_sel'
+          M1 = M_VAR;
+          
+      case 'right_samp_sel'
+          M2 = M_VAR;
+  end
    
 end
 
@@ -1014,7 +438,7 @@ function threshold_type(~,~)
     
     approach = (RES_THRES_POP.String{RES_THRES_POP.Value});
     
-    if strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)') || strcmp(approach, 'NBS FWE(Non-Parametric)') || strcmp(approach, 'NBS TFCE(Non-Parametric)') 
+    if strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)') || strcmp(approach, 'Bonferroni (Parametric)') || strcmp(approach, 'NBS FWE(Non-Parametric)') || strcmp(approach, 'NBS TFCE(Non-Parametric)') 
         set(RES_PERM_TXT, 'enable', 'off');
         set(RES_PERM_VAL, 'enable', 'off');
         set(RES_PERM_VAL, 'String', []);
@@ -1024,7 +448,7 @@ function threshold_type(~,~)
         set(RES_PERM_VAL, 'String', []);
     end
     
-    if strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)') || strcmp(approach, 'Uncorrected (Non-Parametric)') || strcmp(approach, 'FDR (Non-Parametric)')
+    if strcmp(approach, 'Uncorrected (Parametric)') || strcmp(approach, 'FDR (Parametric)') || strcmp(approach, 'Bonferroni (Parametric)') || strcmp(approach, 'Uncorrected (Non-Parametric)') || strcmp(approach, 'FDR (Non-Parametric)')
         set(RES_THRES_VAL_TXT, 'enable', 'off');
         set(RES_THRES_VAL_UNI, 'enable', 'off');
         set(RES_THRES_VAL_UNI, 'String', []);
@@ -1072,6 +496,7 @@ function run(~,~)
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                                 disp('continue with computation');
+                                %tmfc_ttest
                             end
                         end
                     else
@@ -1089,6 +514,7 @@ function run(~,~)
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                                 disp('continue with computation');
+                                %tmfc_ttest
                             end
                         end
                     else
@@ -1106,6 +532,7 @@ function run(~,~)
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                                 disp('continue with computation');
+                                %tmfc_ttest
                             end
                         end
                     else
@@ -1123,6 +550,7 @@ function run(~,~)
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                                 disp('continue with computation');
+                                %tmfc_ttest
                             end
                         end
                     else
@@ -1162,15 +590,13 @@ function run(~,~)
                 TP_1 = TP_check();
                 if TP_1 == 1
                     set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices, str2num(RES_CONT_val.String),str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));                   
+                    [thresholded,pval,tval,conval] = tmfc_ttest(matrices_0, str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));                   
                     
                     if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
                         fprintf('Generating Results graph...\n');
-                        tmfc_results_GUI(thresholded,pval,tval,conval,str2double(RES_ALP_val.String),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                        tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
                     end
                     clear thresholded pval tval conval;
-                    %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),[],[],RES_THRES_POP.String{RES_THRES_POP.Value});
-                    %tmfc_inference(M0, str2num(RES_CONT_val.String), str2double(RES_ALP_val.String),str2double(RES_PERM_VAL.String),str2double(RES_THRES_VAL_UNI.String),RES_THRES_POP.String{RES_THRES_POP.Value});
                 end
             end
             
@@ -1200,11 +626,16 @@ function run(~,~)
                     TP_2 = TP_check();
                     if TP_2 == 1
                         set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                        disp('continue with computation');
+                        max{1} = matrices_1;
+                        max{2} = matrices_2;
+                        [thresholded,pval,tval,conval] = tmfc_ttest2(max,str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                        if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                            fprintf('Generating Results graph...\n');
+                            tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                        end
+                        clear thresholded pval tval conval max;
                     end
                 end
-                
-                
             else
                warning('The number of ROI x ROIs between the selections are inconsistent, please select matrices with consistent ROIs');
                set(RES_L1_CTR, 'ForegroundColor',[0.773, 0.353, 0.067]); % Update GUI 

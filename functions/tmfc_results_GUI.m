@@ -1,27 +1,48 @@
 function tmfc_results_GUI(thresholded,pval,tval,conval,alpha,correction)
 
+% In order to save TYEST TYPE & THRESHOLD TYPE WE NEED TO HAVE MORE
+% VARIABLES INTO THE FUNCTION ARGUMENT PARAMETERS ---- lets check
 
+% if nargin == 0
+% 
+%     file = spm_select(1,'.mat','Select folders of all subjects',{},pwd,'.');
+%     if ~isempty(file)
+%         tmfc_res = load(file);
+%         thresholded
+%         pval
+%         pval
+%         conval
+%         alpha
+%         correction = 
+%         
+%         disp('File Loaded');
+%     else
+%         warning('Please select a .mat file to visualization TMFC toolbox computed results');
+%         thresholded = [];
+%     end
+% end
 
-res_win = figure('Name','TMFC Simulation: Output','NumberTitle', 'off','Units', 'normalized', 'Position', [0.4 0.25 0.55 0.42],'Tag', 'TMFC Simulation: Output','WindowStyle', 'modal');
-ax1 = subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));  
-ax2 = subplot(1,2,2); imagesc(thresholded);   subtitle(['p' correction '<' num2str(alpha)]); axis square; colorbar;  
-colormap(subplot(1,2,1),'turbo')  
-set(findall(gcf,'-property','FontSize'),'FontSize',16)
-res_win_title  = uicontrol(res_win,'Style','text','String', 'Results','Units', 'normalized', 'Position',[0.461 0.92 0.09 0.05],'fontunits','normalized', 'fontSize', 0.75);%, 'HorizontalAlignment','Left');
+if ~isempty(thresholded)
 
-save_data_btn = uicontrol('Style','pushbutton','String', 'Save Data','Units', 'normalized','Position',[0.18 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
-save_plot_btn = uicontrol('Style','pushbutton','String', 'Save Plots','Units', 'normalized','Position',[0.62 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
-set(save_data_btn,'callback', @int_data_saver)
-set(save_plot_btn ,'callback', @int_plot_saver)
+    res_win = figure('Name','TMFC Simulation: Output','NumberTitle', 'off','Units', 'normalized', 'Position', [0.4 0.25 0.55 0.42],'Tag', 'TMFC Simulation: Output','WindowStyle', 'modal');
+    ax1 = subplot(1,2,1); imagesc(conval);        subtitle('Group mean'); axis square; colorbar; caxis(tmfc_axis(conval,1));  
+    ax2 = subplot(1,2,2); imagesc(thresholded);   subtitle(['p' correction '<' num2str(alpha)]); axis square; colorbar;  
+    colormap(subplot(1,2,1),'turbo')  
+    set(findall(gcf,'-property','FontSize'),'FontSize',16)
+    res_win_title  = uicontrol(res_win,'Style','text','String', 'Results','Units', 'normalized', 'Position',[0.461 0.92 0.09 0.05],'fontunits','normalized', 'fontSize', 0.75);%, 'HorizontalAlignment','Left');
 
+    save_data_btn = uicontrol('Style','pushbutton','String', 'Save Data','Units', 'normalized','Position',[0.18 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
+    save_plot_btn = uicontrol('Style','pushbutton','String', 'Save Plots','Units', 'normalized','Position',[0.62 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
+    set(save_data_btn,'callback', @int_data_saver)
+    set(save_plot_btn ,'callback', @int_plot_saver)
 
-
-tmfc_res.threshold = thresholded;
-tmfc_res.pval = pval;
-tmfc_res.tval = tval;
-tmfc_res.conval = conval;
-tmfc_res.alpha = alpha; 
-
+    tmfc_res.threshold = thresholded;
+    tmfc_res.pval = pval;
+    tmfc_res.tval = tval;
+    tmfc_res.conval = conval;
+    tmfc_res.alpha = alpha; 
+    
+end
 function save_stat = int_data_saver(~,~)
        
     % Ask user for Filename & location name:
