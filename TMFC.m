@@ -769,24 +769,8 @@ function gPPI(ButtonH, EventData, TMFC_GUI)
                              if verify_tmfc ~= length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.gPPI)    
                                  
                                  % Perform computation of gPPI for all newly added contrasts
-                                 for i = verify_tmfc+1:length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.gPPI)
-                                     
-                                     % ROI to ROI generation
-                                     sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, 1, i, tmfc.ROI_set_number);                           
-                                     if sub_check_roi(length(tmfc.subjects)) == 1
-                                         fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
-                                     else
-                                         disp('ROI-ROI contrasts failed');
-                                     end
-                                     
-                                     % Seed to Voxel generation
-                                     sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, 1,i, tmfc.ROI_set_number);
-                                      if sub_check_svox(length(tmfc.subjects)) == 1
-                                         fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
-                                     else
-                                         disp('Seed-Voxel contrasts failed');
-                                     end
-                                     
+                                 for i = verify_tmfc+1:length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.gPPI)                                     
+                                     Seed_ROI_condition(tmfc, i, 1);
                                  end
                              end
                              
@@ -929,21 +913,7 @@ function gPPI_FIR(ButtonH, EventData, TMFC_GUI)
                                  % Perform computation of gPPI FIR for all newly added contrasts
                                  for i=verify_tmfc+1:length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.gPPI_FIR)
                                      
-                                     % ROI to ROI generation
-                                     sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, 2, i, tmfc.ROI_set_number);                           
-                                     if sub_check_roi(length(tmfc.subjects)) == 1
-                                         fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
-                                     else
-                                         disp('ROI-ROI contrasts failed');
-                                     end
-                                     
-                                     % Seed to Voxel generation
-                                     sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, 2, i, tmfc.ROI_set_number);
-                                      if sub_check_svox(length(tmfc.subjects)) == 1
-                                         fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
-                                     else
-                                         disp('Seed-Voxel contrasts failed');
-                                      end
+                                    Seed_ROI_condition(tmfc, i, 2);
                                       
                                  end
                                  
@@ -1356,22 +1326,8 @@ function BSC(buttonH, EventData, TMFC_GUI)
                                      
                                      % Perform computation of BSC for all newly added contrasts
                                      for i = verify_tmfc+1:length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.BSC)
-                                         
-                                         % ROI to ROI generation
-                                         sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, 3, i, tmfc.ROI_set_number);                           
-                                         if sub_check_roi(length(tmfc.subjects)) == 1
-                                             fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
-                                         else
-                                             fprintf('ROI-ROI contrasts failed\n');
-                                         end
-                                         
-                                         % Seed to Voxel generation
-                                         sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, 3, i, tmfc.ROI_set_number);
-                                          if sub_check_svox(length(tmfc.subjects)) == 1
-                                             fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
-                                         else
-                                             fprintf('Seed-Voxel contrasts failed\n');
-                                          end
+
+                                        Seed_ROI_condition(tmfc, i, 3);
                                           
                                      end
                                      
@@ -2154,22 +2110,7 @@ function BSC_after_FIR(ButtonH, EventData, TMFC_GUI)
                                      % Perform computation of BSC FIR for all newly added contrasts
                                      for i=verify_tmfc+1:length(tmfc.ROI_set(tmfc.ROI_set_number).contrasts.BSC_after_FIR)
                                          
-                                         % ROI to ROI generation
-                                         sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, 4, i, tmfc.ROI_set_number);                           
-                                         if sub_check_roi(length(tmfc.subjects)) == 1
-                                             fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
-                                         else
-                                             fprintf('ROI-ROI contrasts failed\n');
-                                         end
-                                         
-                                         % Seed to Voxel generation
-                                         sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, 4, i, tmfc.ROI_set_number);
-                                          if sub_check_svox(length(tmfc.subjects)) == 1
-                                             fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
-                                         else
-                                             fprintf('Seed-Voxel contrasts failed\n');
-                                         end
-                                          
+                                        Seed_ROI_condition(tmfc, i, 4);                                          
                                      end
                                     
                                  end
@@ -2487,9 +2428,9 @@ end
 
 %% ===========================[ Results ]===================================
 function results(ButtonH, EventData, TMFC_GUI)
-    MW_Freeze(1);
+    %MW_Freeze(1);
     tmfc_results_GUI();
-    MW_Freeze(0);
+    %MW_Freeze(0);
 end
 
 %% =====================[ Supporting Functions ]===========================
@@ -3117,6 +3058,51 @@ function [tmfc] = reset_BGFC(tmfc)
         
     end
 end
+
+function Seed_ROI_condition(tmfc, i, case_app)
+
+    switch(tmfc.defaults.analysis)
+        
+        case 1  % Seed to Voxel & ROI to ROI
+             % ROI to ROI generation 
+             sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, case_app, i, tmfc.ROI_set_number);                           
+             if sub_check_roi(length(tmfc.subjects)) == 1
+                 fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
+             else
+                 disp('ROI-ROI contrasts failed');
+             end
+
+             % Seed to Voxel generation
+             sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, case_app,i, tmfc.ROI_set_number);
+              if sub_check_svox(length(tmfc.subjects)) == 1
+                 fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
+             else
+                 disp('Seed-Voxel contrasts failed');
+             end
+            
+        case 2  % ROI to ROI only
+             % ROI to ROI generation 
+             sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, case_app, i, tmfc.ROI_set_number);                           
+             if sub_check_roi(length(tmfc.subjects)) == 1
+                 fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
+             else
+                 disp('ROI-ROI contrasts failed');
+             end
+            
+             
+        case 3  % Seed to Voxel only
+             % Seed to Voxel generation
+             sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, case_app,i, tmfc.ROI_set_number);
+              if sub_check_svox(length(tmfc.subjects)) == 1
+                 fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
+             else
+                 disp('Seed-Voxel contrasts failed');
+              end
+              
+    end
+
+end
+
 
 % =================================[ END ]=================================
 
