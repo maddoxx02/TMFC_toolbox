@@ -620,7 +620,6 @@ function run(~,~)
             dims_L2 = S2.size;
 
             if dims_L1(1) == dims_L2(1) && dims_L1(2) == dims_L2(2)
-                disp('Continue with contrast and shit');
                 CA_2 = CA_controller();
                 if CA_2 == 1
                     TP_2 = TP_check();
