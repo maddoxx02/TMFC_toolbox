@@ -132,7 +132,13 @@ function file_selector(M_VAR, matrix, disp_box, disp_str, case_maker)
         end
                
         % Updating the GUI 
-        if isempty(M_VAR{1}) % exist('varible_name','var')
+        if ~exist('M_VAR', 'var') || isempty(M_VAR)
+            % If all files selection was rejected during checks, reset GUI
+            disp('No (.mat) file(s) selected');
+            set(disp_str, 'String', '0 ROIs x 0 subjects');
+            set(disp_str, 'ForegroundColor',[0.773, 0.353, 0.067]);     
+            M_VAR = {};
+        elseif isempty(M_VAR{1}) 
             % If all files selection was rejected during checks, reset GUI
             disp('No (.mat) file(s) selected');
             set(disp_str, 'String', '0 ROIs x 0 subjects');
@@ -152,9 +158,9 @@ function file_selector(M_VAR, matrix, disp_box, disp_str, case_maker)
     % Second case: Add new matrices
     else              
         new_M_VAR = selector();        % Select new files via function
-        
+        assignin('base','new_M_VAR',new_M_VAR);
         % If new files are selected then proceed 
-        if ~isempty(new_M_VAR)
+        if ~isempty(new_M_VAR{1})
                
             % Check for multiple variables within selected files   
             if multi_check(new_M_VAR) ~= 1        
@@ -489,14 +495,20 @@ function run(~,~)
                 if length(dims_L1) == 2 && length(dims_L2) == 2
                     if length(M1) == length(M2)
                         % continue with contrast and alpha
-                        %disp('sucess');
+                        
                         CA_0 = CA_controller();
                         if CA_0 == 1
                             TP_0 = TP_check();
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                                disp('continue with computation');
-                                %tmfc_ttest
+                                max{1} = matrices_1;
+                                max{2} = matrices_2;
+                                [thresholded,pval,tval,conval] = tmfc_ttest(max,str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                                    fprintf('Generating Results graph...\n');
+                                    tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                end
+                                clear thresholded pval tval conval max;
                             end
                         end
                     else
@@ -513,8 +525,14 @@ function run(~,~)
                             TP_0 = TP_check();
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                                disp('continue with computation');
-                                %tmfc_ttest
+                                max{1} = matrices_1;
+                                max{2} = matrices_2;
+                                [thresholded,pval,tval,conval] = tmfc_ttest(max,str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                                    fprintf('Generating Results graph...\n');
+                                    tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                end
+                                clear thresholded pval tval conval max;
                             end
                         end
                     else
@@ -530,9 +548,16 @@ function run(~,~)
                         if CA_0 == 1
                             TP_0 = TP_check();
                             if TP_0 == 1
+                                % combine M2 into a singel unit 
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                                disp('continue with computation');
-                                %tmfc_ttest
+                                max{1} = matrices_1;
+                                max{2} = matrices_2;
+                                [thresholded,pval,tval,conval] = tmfc_ttest(max,str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                                    fprintf('Generating Results graph...\n');
+                                    tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                end
+                                clear thresholded pval tval conval max;
                             end
                         end
                     else
@@ -549,8 +574,14 @@ function run(~,~)
                             TP_0 = TP_check();
                             if TP_0 == 1
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
-                                disp('continue with computation');
-                                %tmfc_ttest
+                                max{1} = matrices_1;
+                                max{2} = matrices_2;
+                                [thresholded,pval,tval,conval] = tmfc_ttest(max,str2num(RES_CONT_val.String),eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                if ~isempty(thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}))
+                                    fprintf('Generating Results graph...\n');
+                                    tmfc_results_GUI(thresholded,pval,tval,conval,eval(get(RES_ALP_val, 'String')),thresh_ttest_adapter(RES_THRES_POP.String{RES_THRES_POP.Value}));
+                                end
+                                clear thresholded pval tval conval max;
                             end
                         end
                     else
@@ -613,12 +644,12 @@ function run(~,~)
             matObj = matfile(M1{1,:});
             S1 = whos(matObj);
             dims_L1 = S1.size;
-
+                        
             % ROI size calculation for Set 1 
             matObj = matfile(M2{1,:});
             S2 = whos(matObj);
             dims_L2 = S2.size;
-
+                        
             if dims_L1(1) == dims_L2(1) && dims_L1(2) == dims_L2(2)
                 CA_2 = CA_controller();
                 if CA_2 == 1
