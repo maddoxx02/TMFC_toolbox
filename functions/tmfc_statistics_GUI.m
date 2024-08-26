@@ -62,7 +62,7 @@ set(RES_L0_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
 set(RES_L1_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
 set(RES_L2_REM, 'callback', @(src, event) remove_caller(get(src, 'UserData')));
 set(RES_RUN, 'callback', @run);
-
+warning('off','backtrace')
 M0 = {}; % variable to store the matrices for One-sample t-test
 M1 = {}; % variable to store the matrices set 1 Paired & Two-sample t-test
 M2 = {}; % variable to store the matrices set 2 Paired & Two-sample t-test
