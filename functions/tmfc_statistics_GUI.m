@@ -158,7 +158,7 @@ function file_selector(M_VAR, matrix, disp_box, disp_str, case_maker)
     % Second case: Add new matrices
     else              
         new_M_VAR = selector();        % Select new files via function
-        assignin('base','new_M_VAR',new_M_VAR);
+        
         % If new files are selected then proceed 
         if ~isempty(new_M_VAR{1})
                
@@ -295,7 +295,7 @@ function file_remove(sel_var, M_VAR, disp_box,disp_str,case_maker)
                 % Unlikely event, if this occurs, then there is an issue
                 % with the type of files uploaded (mostly, it may not be
                 % 2D or 3D formats. 
-                disp('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
+                warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
             end   
        end
    end
@@ -349,15 +349,15 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); %ch
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); 
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');  %ch
-        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');  
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
-        %warning('Work in progress. Please wait for future updates'); %CH
+        
         % Reset Variables 
         M0 = {};
         M1 = {};
@@ -386,8 +386,8 @@ function test_type(~,~)
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
-
-        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');
+        
         %  Reset Varaibles
         M0 = {};
         M1 = {};
@@ -409,18 +409,15 @@ function test_type(~,~)
         
         % Reset GUI 
         set([RES_lst_0,RES_L0_CTR],'visible', 'off');        
-        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); %ch
+        set([RES_lst_1,RES_lst_2,RES_L1_CTR,RES_L2_CTR],'visible', 'on','enable', 'on'); 
         set([RES_L0_SEL,RES_L0_REM],'visible', 'off');
-        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');   %ch          
+        set([RES_L1_SEL,RES_L1_REM,RES_L2_SEL,RES_L2_REM],'visible', 'on','enable', 'on');           
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'String', '0 ROIs x 0 subjects');
         set([RES_L0_CTR, RES_L1_CTR,RES_L2_CTR], 'ForegroundColor',[0.773, 0.353, 0.067]);
         set([RES_CONT_val, RES_ALP_val], 'String', []);
         set([RES_PERM_VAL, RES_THRES_VAL_UNI], 'String', []);
-        
-        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');%ch
-        
-        %warning('Work in progress. Please wait for future updates'); %ch
-        
+        set([RES_THRES_POP,RES_THRES_TXT,RES_CONT_txt,RES_CONT_val,RES_ALP_txt,RES_ALP_val,RES_RUN],'enable', 'on');
+
         % Reset Variables
         M0 = {};
         M1 = {};
@@ -494,8 +491,7 @@ function run(~,~)
 
                 if length(dims_L1) == 2 && length(dims_L2) == 2
                     if length(M1) == length(M2)
-                        % continue with contrast and alpha
-                        
+                        % Continue with contrast & alpha
                         CA_0 = CA_controller();
                         if CA_0 == 1
                             TP_0 = TP_check();
@@ -519,7 +515,6 @@ function run(~,~)
 
                 elseif length(dims_L1) == 2 && length(dims_L2) == 3
                     if length(M1) == dims_L2(3)
-                        %disp('sucess');
                         CA_0 = CA_controller();
                         if CA_0 == 1
                             TP_0 = TP_check();
@@ -543,12 +538,10 @@ function run(~,~)
 
                 elseif length(dims_L1) == 3 && length(dims_L2) == 2
                     if dims_L1(3) == length(M2)
-                        %disp('sucess');
                         CA_0 = CA_controller();
                         if CA_0 == 1
                             TP_0 = TP_check();
                             if TP_0 == 1
-                                % combine M2 into a singel unit 
                                 set([RES_L0_CTR,RES_L1_CTR], 'ForegroundColor',[0.219, 0.341, 0.137]); % Update GUI 
                                 max{1} = matrices_1;
                                 max{2} = matrices_2;
@@ -568,7 +561,6 @@ function run(~,~)
 
                 elseif length(dims_L1) == 3 && length(dims_L2) == 3
                     if dims_L1(3) == dims_L2(3)
-                        %disp('sucess');
                         CA_0 = CA_controller();
                         if CA_0 == 1
                             TP_0 = TP_check();
@@ -591,7 +583,7 @@ function run(~,~)
                     end
 
                 else 
-                    warning('damn error');
+                    warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
                 end
 
             else
@@ -683,7 +675,7 @@ function run(~,~)
         end
         
     else
-        warning('goddamn error');
+        warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
     end
     
 
@@ -710,8 +702,6 @@ function flag = CA_controller(~,~)
              elseif length(G2) > 2
                  warning('Number of Contrast values cannot be greater than TWO, Please re-enter contrast values for computation');
              else
-                 
-                 % CONTD with Alpha verification
                   if isnan(G3)
                      warning('Please enter a numeric Alpha value for computation');
                   else
@@ -727,8 +717,6 @@ function flag = CA_controller(~,~)
             if length(G2) >=2
                 warning('Number of Contrast values cannot exceed ONE, Please re-enter contrast value for computation');
             else
-                
-                % CONTD with Alpha verification
                  if isnan(G3)
                     warning('Please enter Alpha value for computation');
                  else
@@ -753,7 +741,7 @@ function flag = TP_check(~,~)
     approach = (RES_THRES_POP.String{RES_THRES_POP.Value});
 
      if strcmp(approach, 'Uncorrected (Non-Parametric)') || strcmp(approach, 'FDR (Non-Parametric)') 
-         % check if permutations is a number and not a floating point value
+         % Check if permutations is a number and not a floating point value
          P_1 = str2num(RES_PERM_VAL.String);
          if ~isempty(P_1) && P_1 > 0
              flag = 1;
@@ -801,7 +789,6 @@ function flag = multi_check(D)
     flag = 0;               % Binary Flag to indicate status of multiple vars
     
     if ~isempty(D{1})
-        %disp('test');
         % Loop to iterate through all possible (.mat) files 
         for i = 1:main_size(1)
 
@@ -811,7 +798,7 @@ function flag = multi_check(D)
 
             % If there exists files with multiple variables within, then disp
             if A(1) > 1
-                fprintf('MULTIPLE VARIABLES in the file :%s \n', D{i,:})
+                fprintf('Multiple variables present in the file :%s \n', D{i,:})
                 holder(j) = i;
                 j = j+1;
                 flag = 1;
@@ -967,7 +954,7 @@ function flag = ROI_check(C, ralpher, new_files)
                            flag = 1;
                        end
                    else
-                       warning('Something isn''t right here');
+                       warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
                    end
 
                end
@@ -1010,10 +997,6 @@ function flag = ROI_check(C, ralpher, new_files)
                    end 
 
                 elseif length(s3) == 3
-                       % Compare dimensions, if inconsistent, files that are
-                       % inconsistent
-                       assignin('base', 's3', s3);
-                       assignin('base', 's4', s4);
                        if (s3(1) == s4(1) && s3(2) == s4(2) && s3(3) == s4(3)) == 0
                            fprintf('\n ROI x ROI dimensions of following files are not equal, please re-select files with consistent ROI dimensions:');
                            fprintf('\n File 1: %s ',C{1,:});
@@ -1026,7 +1009,7 @@ function flag = ROI_check(C, ralpher, new_files)
                            flag = 1;
                        end
                 else
-                       warning('Something isn''t right here');
+                       warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
                 end
                 
                 
@@ -1071,7 +1054,7 @@ function flag = ROI_check(C, ralpher, new_files)
                                flag = 1;
                            end
                    else
-                       warning('Something isn''t right here');
+                       warning('Fatal Error, the files must be ROI x ROI x Subjects format & dimensions');
                    end                     
                 end  
            end
@@ -1093,8 +1076,6 @@ save_data_btn = uicontrol('Style','pushbutton','String', 'Save Data','Units', 'n
 save_plot_btn = uicontrol('Style','pushbutton','String', 'Save Plots','Units', 'normalized','Position',[0.62 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
 set(save_data_btn,'callback', @int_data_saver)
 set(save_plot_btn ,'callback', @int_plot_saver)
-
-
 
 tmfc_res.threshold = thresholded;
 tmfc_res.pval = pval;
@@ -1171,7 +1152,6 @@ function save_stat = int_plot_saver(~,~)
 end % Closing Save project Function
 
 
-
 function SAVER_STAT =  saver(save_path)
 % 0 - Successfull save, 1 - Failed save
     try 
@@ -1200,7 +1180,7 @@ end
 
 
 end
-% function to convert internal labelling to tmfc_ttest() labelling
+% Function to convert internal labelling to tmfc_ttest() labelling
 function small_string = thresh_ttest_adapter(big_string)
 
     small_string = '';

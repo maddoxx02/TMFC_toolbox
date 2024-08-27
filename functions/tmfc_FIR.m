@@ -64,14 +64,6 @@ function [sub_check] = tmfc_FIR(tmfc,start_sub)
 
 if nargin == 1
     start_sub = 1;
-% else
-%     % Initialize sub_check 
-%     if start_sub == 1
-%        sub_check = NaN(length(tmfc.subjects),1);
-%     else
-%        sub_check = NaN(length(tmfc.subjects),1);
-%        sub_check(1:start_sub) = 1;
-%     end   
 end
 
 % Updating Main GUI 

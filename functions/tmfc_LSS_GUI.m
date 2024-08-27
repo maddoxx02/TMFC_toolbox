@@ -224,10 +224,7 @@ end
 
                disp(strcat(num2str(length(LST_2)),' conditions successfully selected'));
                conditions = cond;
-%                try
-%                    h99 = findobj('Tag', 'MAIN_WINDOW');
-%                    setappdata(h99, 'LSS_NO_COND', 0); 
-%                end
+
            end
             
         end
@@ -279,10 +276,10 @@ end
             % Creation of GUI window for Help description
             LSS_H_W = figure('Name', 'LSS regression: Help', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.67 0.31 0.22 0.50],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off', 'WindowStyle', 'Modal');
 
-            Data_1 = {'Suppose you have two separate sessions.','','Both sessions contains task regressors for', '“Cond A”, “Cond B” and “Errors”', '','If you are only interested in “Cond A” and “Cond B” comparison, the following conditions should be selected:',...
+            Data_1 = {'Suppose you have two separate sessions.','','Both sessions contains task regressors for', '“Cond A�?, “Cond B�? and “Errors�?', '','If you are only interested in “Cond A�? and “Cond B�? comparison, the following conditions should be selected:',...
                 '','1)  Cond A (Sess1)','2)  Cond B (Sess1)','3)  Cond A (Sess2)','4)  Cond B (Sess2)','','For all selected conditions of interest, the TMFC toolbox will calculate individual trial’s beta-images using Least-Squares Separate (LSS) approach.',...
                 '','For each individual trial (event), the LSS approach estimates a separate general linear model (GLM) with two regressors. The first regressor models the expected BOLD response to the current trial of interest, and the second (nuisance) regressor models the BOLD response to all other trials (of interest and no interest).',...
-                '','For trials of no interest (here, “Errors”), separate GLMs will not be estimated. Trials of no interest will be used only for the second (nuisance) regressor.'};
+                '','For trials of no interest (here, “Errors�?), separate GLMs will not be estimated. Trials of no interest will be used only for the second (nuisance) regressor.'};
 
             LSS_W1 = uicontrol(LSS_H_W,'Style','text','String',Data_1 ,'Units', 'normalized', 'Position', [0.05 0.12 0.89 0.85], 'HorizontalAlignment', 'left','backgroundcolor','w','fontunits','normalized', 'fontSize', 0.0301);
             LSS_H_OK = uicontrol(LSS_H_W,'Style','pushbutton','String', 'OK','Units', 'normalized', 'Position', [0.34 0.06 0.30 0.06]);%,'fontunits','normalized', 'fontSize', 0.35

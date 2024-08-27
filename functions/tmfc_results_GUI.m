@@ -31,7 +31,6 @@ if nargin == 0 % Variant 1 CLI & Variant 2 GUI
    end
     
 elseif nargin == 6 && isempty(findobj('Tag', 'TMFC_GUI')) == 1  % Variant 2 CLI
-    % what happens when user provides incorrect inputs?
     generator();
     
 elseif nargin == 6 && ~isempty(findobj('Tag', 'TMFC_GUI')) == 1 % Variant 1 GUI
@@ -46,7 +45,7 @@ end
             ax2 = subplot(1,2,2); imagesc(thresholded);   subtitle(['p' correction '<' num2str(alpha)]); axis square; colorbar;  
             colormap(subplot(1,2,1),'turbo')  
             set(findall(gcf,'-property','FontSize'),'FontSize',16)
-            res_win_title  = uicontrol(res_win,'Style','text','String', 'Results','Units', 'normalized', 'Position',[0.461 0.92 0.09 0.05],'fontunits','normalized', 'fontSize', 0.75);%, 'HorizontalAlignment','Left');
+            res_win_title  = uicontrol(res_win,'Style','text','String', 'Results','Units', 'normalized', 'Position',[0.461 0.92 0.09 0.05],'fontunits','normalized', 'fontSize', 0.75);
 
             save_data_btn = uicontrol('Style','pushbutton','String', 'Save Data','Units', 'normalized','Position',[0.18 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
             save_plot_btn = uicontrol('Style','pushbutton','String', 'Save Plots','Units', 'normalized','Position',[0.62 0.05 0.210 0.054],'fontunits','normalized', 'fontSize', 0.36);
@@ -168,7 +167,7 @@ end
 
 end
 
-% function to convert internal labelling to tmfc_ttest() labelling
+% Function to convert internal labelling to tmfc_ttest() labelling
 function big_string = thresh_ttest_adapter(small_string)
 
     big_string = '';

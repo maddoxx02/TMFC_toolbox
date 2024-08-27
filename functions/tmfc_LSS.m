@@ -250,7 +250,6 @@ for i = start_sub:N
 
         % Variable to exit LSS regression during execution
          
-        
         % Sequential or parallel computing
         switch tmfc.defaults.parallel                                 
             % -------------------- Sequential Computing -----------------------
@@ -331,12 +330,6 @@ for i = start_sub:N
                     condition(trial.cond(k)).trials(trial.number(k)) = trials(k);
                 end
                 clear trials
-                
-%                     try %STOPs Minimimizing of the waitbar
-%                     DG = guidata(findobj('Tag', 'MAIN_WINDOW'));
-%                     set(DG.MAIN_F, 'Position', [0.18 0.26 0.205 0.575])
-%                     figure(DG.MAIN_F);
-%                     end  
         end
 
         sub_check(i).session(sess_num(j)).condition = condition;
