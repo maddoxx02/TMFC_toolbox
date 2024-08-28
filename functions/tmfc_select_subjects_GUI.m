@@ -1,4 +1,4 @@
-function [paths] = tmfc_select_subjects_GUI(SPM_check)
+ function [paths] = tmfc_select_subjects_GUI(SPM_check)
 
 % ========= Task-Modulated Functional Connectivity (TMFC) toolbox =========
 %
@@ -43,7 +43,7 @@ GUI_freeze(1);
 % Creation of Figure for the Window
 TMFC_SS = figure('Name', 'Subject Manager', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.36 0.25 0.35 0.575],'MenuBar', 'none','ToolBar', 'none','color','w','CloseRequestFcn',@close);
 TMFC_SS_B1 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'Select subject folders','Units', 'normalized', 'Position',[0.033 0.850 0.455 0.095],'FontUnits','normalized','FontSize',0.25);
-TMFC_SS_B2 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'Select SPM.mat file for Subject №1','Units', 'normalized', 'Position',[0.033 0.750 0.455 0.095],'FontUnits','normalized','FontSize',0.25);
+TMFC_SS_B2 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'Select SPM.mat file for Subject #1','Units', 'normalized', 'Position',[0.033 0.750 0.455 0.095],'FontUnits','normalized','FontSize',0.25);
 TMFC_SS_B3 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'Add new subject','Units', 'normalized', 'Position',[0.033 0.14 0.300 0.095],'FontUnits','normalized','FontSize',0.25);
 TMFC_SS_B4 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'Remove selected subject','Units', 'normalized', 'Position',[0.346 0.14 0.300 0.095],'FontUnits','normalized','FontSize',0.25);
 TMFC_SS_B5 = uicontrol(TMFC_SS,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.390 0.04 0.200 0.080],'FontUnits','normalized','FontSize',0.28);
@@ -126,6 +126,8 @@ function action_2(~,~)
             set(TMFC_SS_lst, 'String', file_address);                          % Display Full Address of Subs in the GUI
             disp('The SPM.mat file has been succesfully selected');
             set(TMFC_SS_S2,'String', 'Selected','ForegroundColor',[0.219, 0.341, 0.137]);
+        else
+            warning('The SPM.mat file has not been selected');
         end 
     end
 end
@@ -265,28 +267,29 @@ function file_func = action_5(~,~)
             % Stage 1 - Check SPM.mat files existence
             [file_exist,file_not_exist] = SPM_EXT_CHK(file_address);        
     
-            if size(file_address) == size(file_not_exist) | isempty(file_exist) %| strcmp(file_exist, '')
+            if size(file_address,1) == size(file_not_exist,1) | isempty(file_exist) %| strcmp(file_exist, '')
                 warning('STAGE 1 CHECK FAILED: Selected files are missing from the directories, Please try again');
                 Royal_Reset();
             else
+
                 % Stage 2 - Check conditions
                 [file_correct, file_incorrect] = SPM_COND(file_exist);          
     
-                if size(file_incorrect) == size(file_exist) | strcmp(file_correct,'')
+                if size(file_incorrect,1) == size(file_exist,1) | strcmp(file_correct,'')
                     warning('STAGE 2 CHECK FAILED: Selected files have incorrect conditions, Please try again');
                     Royal_Reset();
                 else
                     % Stage 3 - Check output directories 
                     [file_dir,file_no_dir] = CHECK_DIR(file_correct);
             
-                    if size(file_no_dir) == size(file_correct) | strcmp(file_dir,'')
+                    if size(file_no_dir,1) == size(file_correct,1) | strcmp(file_dir,'')
                         warning('STAGE 3 CHECK FAILED: Directories are missing from selected Files, Please try again');
                         Royal_Reset();
                     else
                         % Stage 4 - Check functional files
                         [file_func,file_no_func] = CHECK_FUNCTION(file_dir);
                 
-                        if size(file_no_func) == size(file_dir) | strcmp(file_func, '')
+                        if size(file_no_func,1) == size(file_dir,1) | strcmp(file_func, '')
                             warning('STAGE 4 CHECK FAILED: Selected files are missing from all directories, Please try again');
                             Royal_Reset();
                         else
@@ -348,7 +351,7 @@ function [full_path, mat_adrs] = mat_file(x)
         
     % Selection of the SPM.mat file for the first subject 
     [mat_f] = spm_select( 1,'any','Select SPM.mat file for the first subject',{}, x(1,:), 'SPM.*');    
-    [mat_adrs] = strrep(mat_f, x(1,:),''); 
+    [mat_adrs] = strrep(mat_f, strtrim(x(1,:)),''); 
     len_subs = size(x);
 
     full_path = {}; % Creation of variable to store all the new Full paths of the subjects 
@@ -652,8 +655,8 @@ function GUI_freeze(state)
         set([main_GUI.TMFC_GUI_B1, main_GUI.TMFC_GUI_B2, main_GUI.TMFC_GUI_B3, main_GUI.TMFC_GUI_B4,...
             main_GUI.TMFC_GUI_B5a, main_GUI.TMFC_GUI_B5b, main_GUI.TMFC_GUI_B6, main_GUI.TMFC_GUI_B7,...
             main_GUI.TMFC_GUI_B8, main_GUI.TMFC_GUI_B9, main_GUI.TMFC_GUI_B10, main_GUI.TMFC_GUI_B11,...
-            main_GUI.TMFC_GUI_B12,main_GUI.TMFC_GUI_B13a,main_GUI.TMFC_GUI_B13b,main_GUI.TMFC_GUI_B14a...
-            main_GUI.TMFC_GUI_B14b], 'Enable', state);
+            main_GUI.TMFC_GUI_B12a,main_GUI.TMFC_GUI_B12b,main_GUI.TMFC_GUI_B13a,main_GUI.TMFC_GUI_B13b,...
+            main_GUI.TMFC_GUI_B14a,main_GUI.TMFC_GUI_B14b], 'Enable', state);
     end       
      
 end

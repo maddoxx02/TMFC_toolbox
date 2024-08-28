@@ -53,7 +53,7 @@ if ~isempty(tmfc.subjects(1).path)
             ROI_set = [];
         end
     else
-        disp('ROIs not selected');
+        warning('ROIs not selected');
         ROI_set = -1;
     end
 else
@@ -83,11 +83,11 @@ function Fitter(NUM)
         end
     
         % Clear & create 'Masked_ROIs' folder
-        if isfolder(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name))
+        if isdir(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name))
             rmdir(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name),'s');
         end
     
-        if ~isfolder(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name,'Masked_ROIs'))
+        if ~isdir(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name,'Masked_ROIs'))
             mkdir(fullfile(tmfc.project_path,'ROI_sets',ROI_set(CTR).set_name,'Masked_ROIs'));
         end
     
@@ -96,7 +96,7 @@ function Fitter(NUM)
         end
     
     catch
-        disp('ROIs not selected');
+        warning('ROIs not selected');
     end
     
     
@@ -142,7 +142,7 @@ function Fitter(NUM)
             % Raw ROI size (in voxels)
             ROI_set(CTR).ROIs(i).raw_size = nnz(Y);
             try
-                waitbar(i/N,w,['ROI № ' num2str(i,'%.f')]);
+                waitbar(i/N,w,['ROI No ' num2str(i,'%.f')]);
             end
         end
     
@@ -158,7 +158,7 @@ function Fitter(NUM)
             ROI_mask = ROI_set(CTR).ROIs(i).path_masked;
             spm_imcalc(input_images,ROI_mask,'(i1>0).*(i2>0)',{0,0,1,2});
             try
-                waitbar(i/N,w,['ROI № ' num2str(i,'%.f')]);
+                waitbar(i/N,w,['ROI No ' num2str(i,'%.f')]);
             end
         end
     
@@ -172,7 +172,7 @@ function Fitter(NUM)
             ROI_set(CTR).ROIs(i).masked_size = nnz(spm_read_vols(spm_vol(ROI_set(CTR).ROIs(i).path_masked)));
             ROI_set(CTR).ROIs(i).masked_size_percents = 100*ROI_set(CTR).ROIs(i).masked_size/ROI_set(CTR).ROIs(i).raw_size;
             try
-                waitbar(i/N,w,['ROI № ' num2str(i,'%.f')]);
+                waitbar(i/N,w,['ROI No ' num2str(i,'%.f')]);
             end
         end
     
@@ -217,7 +217,7 @@ function Fitter(NUM)
     
             if isempty(ROI_set(CTR).ROIs)
                Flag_3 = 0;
-               disp('No eligible ROIs left for selection, Please try again');
+               warning('No eligible ROIs left for selection, Please try again');
             else
                 Flag_3 = 1;
             end
@@ -245,25 +245,13 @@ function [RF1_flag, ret_name] = ROI_F1(~,~)
     ROI_1 = figure('Name', 'Select ROIs', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.62 0.50 0.16 0.14],'Resize','off','color','w','MenuBar', 'none','ToolBar', 'none','WindowStyle', 'modal','CloseRequestFcn', @stable_exit);
 
     % Initializing Elements of the UI
-    ROI_1_S1 = uicontrol(ROI_1,'Style','text','String', 'Enter a name for the ROI set','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.40);
-    ROI_1_A1 = uicontrol(ROI_1,'Style','edit','String','','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45,'HorizontalAlignment','left');
+    ROI_1_S1 = uicontrol(ROI_1,'Style','text','String', 'Enter a name for the ROI set','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.40,'backgroundcolor',get(ROI_1,'color'),'Position',[0.14 0.60 0.700 0.230]);
+    ROI_1_A1 = uicontrol(ROI_1,'Style','edit','String','','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45,'HorizontalAlignment','left','Position',[0.10 0.44 0.800 0.190]);
+    ROI_1_OK= uicontrol(ROI_1,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45,'Position',[0.10 0.16 0.310 0.180],'callback', @get_name);
+    ROI_1_Help = uicontrol(ROI_1,'Style','pushbutton', 'String', 'Help','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45,'Position',[0.59 0.16 0.310 0.180], 'callback', @help_win_R);
 
-    ROI_1_OK= uicontrol(ROI_1,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45);
-    ROI_1_Help = uicontrol(ROI_1,'Style','pushbutton', 'String', 'Help','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45);
-
-    ROI_1_S1.Position = [0.14 0.60 0.700 0.230];
-    ROI_1_A1.Position = [0.10 0.44 0.800 0.190];
-
-    ROI_1_OK.Position = [0.10 0.16 0.310 0.180];
-    ROI_1_Help.Position = [0.59 0.16 0.310 0.180];
-
-    set(ROI_1_S1,'backgroundcolor',get(ROI_1,'color'));
+    %set(ROI_1_S1,'backgroundcolor',get(ROI_1,'color'));
     movegui(ROI_1,'center');
-
-    % Assigning Functions Callbacks for each Element (button, listbox etc)
-
-    set(ROI_1_OK, 'callback', @get_name);
-    set(ROI_1_Help, 'callback', @help_win_R);
     
     RF1_flag = 0; 
     ret_name = '';
@@ -282,7 +270,7 @@ function [RF1_flag, ret_name] = ROI_F1(~,~)
         % check for existing name
 
         if ~strcmp(name,'') & ~strcmp(name(1),' ')            
-            fprintf('Name set %s\n', name);
+            fprintf('Name ROI set %s\n', name);
             delete(ROI_1);
             RF1_flag = 1;
             ret_name = name;
@@ -295,14 +283,9 @@ function [RF1_flag, ret_name] = ROI_F1(~,~)
     function help_win_R(~,~)
 
         ROI_1_H = figure('Name', 'Select ROIs', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.50 0.40 0.16 0.16],'Resize','off','color','w','MenuBar', 'none','ToolBar', 'none');
-        RH_TEXT = uicontrol(ROI_1_H,'Style','text','String', 'HELP Window under development','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.40);
-        RH_OK= uicontrol(ROI_1_H,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45);
-
-        RH_TEXT.Position = [0.16 0.60 0.700 0.230];
-        RH_OK.Position = [0.35 0.14 0.310 0.180];
-
-        set(RH_TEXT,'backgroundcolor',get(ROI_1_H,'color'));
-        set(RH_OK, 'callback', @RH_CL);
+        RH_TEXT = uicontrol(ROI_1_H,'Style','text','String', 'HELP Window under development','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.40, 'Position',[0.16 0.60 0.700 0.230],'backgroundcolor',get(ROI_1_H,'color'));
+        RH_OK= uicontrol(ROI_1_H,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.45,'Position',[0.35 0.14 0.310 0.180],'callback', @RH_CL);
+        
         movegui(ROI_1_H,'center');
 
         function RH_CL(~,~)
@@ -315,49 +298,32 @@ end
 
 function ROI_F3(dis_data)
 
-
     ROI_3_INFO1 = {'Warning, the following ROIs do not',...
         'contain data for at least one subject and',...
         'will be excluded from the analysis:'};
        
     ROI_3 = figure('Name', 'Select ROIs', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.35 0.40 0.28 0.35],'Resize','off','color','w','MenuBar', 'none','ToolBar', 'none');
 
-    ROI_3_disp = uicontrol(ROI_3 , 'Style', 'listbox', 'String', dis_data,'Max', 100,'Units', 'normalized', 'Position',[0.048 0.22 0.91 0.40],'fontunits','normalized', 'fontSize', 0.105);
-
-    ROI_3_S1 = uicontrol(ROI_3,'Style','text','String', ROI_3_INFO1,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.22);
-    ROI_3_S2 = uicontrol(ROI_3,'Style','text','String', 'Empty ROIs:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.55);
-    
-    ROI_3_OK = uicontrol(ROI_3,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-     
-    ROI_3_S1.Position = [0.20 0.73 0.600 0.2]; 
-    ROI_3_S2.Position = [0.04 0.62 0.200 0.08];
-     
-    ROI_3_OK.Position = [0.38 0.07 0.28 0.10]; % W H
-     
-    set(ROI_3_S1,'backgroundcolor',get(ROI_3,'color'));
-    set(ROI_3_S2,'backgroundcolor',get(ROI_3,'color'));
-    set(ROI_3_disp, 'Value', []);
+    ROI_3_disp = uicontrol(ROI_3 , 'Style', 'listbox', 'String', dis_data,'Max', 100,'Units', 'normalized', 'Position',[0.048 0.22 0.91 0.40],'fontunits','normalized', 'fontSize', 0.105,'Value', []);
+    ROI_3_S1 = uicontrol(ROI_3,'Style','text','String', ROI_3_INFO1,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.22,'backgroundcolor',get(ROI_3,'color'), 'Position',[0.20 0.73 0.600 0.2]);
+    ROI_3_S2 = uicontrol(ROI_3,'Style','text','String', 'Empty ROIs:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.55,'backgroundcolor',get(ROI_3,'color'), 'Position',[0.04 0.62 0.200 0.08]);    
+    ROI_3_OK = uicontrol(ROI_3,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4, 'Position',[0.38 0.07 0.28 0.10],'callback', @ROI_3_function);
     movegui(ROI_3,'center');
-    
-    set(ROI_3_OK, 'callback', @ROI_3_function);
-    
+        
     function ROI_3_function(~,~)
         close(ROI_3);
     end
-    fprintf('Removed %s ', num2str(length(dis_data)) ,' ROIs from the ROI set');
-    fprintf('\n');
-    disp('');
+    fprintf('Removed %s ', num2str(length(dis_data)) ,' ROIs from the ROI set\n');
     uiwait();
-
 end
 
 function [EXPORT] = ROI_F4(ROI_set, CTR)
-    % create full list
+    % Create full list
     
     builder = {};
     EXPORT = [];
     for i = 1:length(ROI_set(CTR).ROIs)
-        gray = {i,horzcat('№ ',num2str(i),': ',ROI_set(CTR).ROIs(i).name, ' :: ', num2str(ROI_set(CTR).ROIs(i).raw_size),' voxels', ' :: ' , num2str(ROI_set(CTR).ROIs(i).masked_size),' voxels ' , ':: ',num2str(ROI_set(CTR).ROIs(i).masked_size_percents), ' %'), ROI_set(CTR).ROIs(i).masked_size_percents};
+        gray = {i,horzcat('No ',num2str(i),': ',ROI_set(CTR).ROIs(i).name, ' :: ', num2str(ROI_set(CTR).ROIs(i).raw_size),' voxels', ' :: ' , num2str(ROI_set(CTR).ROIs(i).masked_size),' voxels ' , ':: ',num2str(ROI_set(CTR).ROIs(i).masked_size_percents), ' %'), ROI_set(CTR).ROIs(i).masked_size_percents};
         builder = vertcat(builder, gray);
     end
     
@@ -366,7 +332,7 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
     
     
     ROI_4_INFO1 = {'Remove heavily cropped ROIs with insufficient data, if necessary.'};
-    ROI_4_INFO2 = {'№ # :: ROI name :: Voxels before masking :: Voxels after masking :: Percent left'};
+    ROI_4_INFO2 = {'No # :: ROI name :: Voxels before masking :: Voxels after masking :: Percent left'};
 
     selection_1 = {};          % Variable to store the selected list of conditions in BOX 1(as INDEX)
     selection_2 = {};          % Variable to store the selected list of conditions in BOX 2(as INDEX)
@@ -374,45 +340,21 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
         
     ROI_4 = figure('Name', 'Select ROIs', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.35 0.40 0.32 0.55],'Resize','off','color','w','MenuBar', 'none','ToolBar', 'none','Windowstyle', 'Modal');
 
-    ROI_4_disp_1 = uicontrol(ROI_4 , 'Style', 'listbox', 'String', lst_1(:,2,1),'Max', 100,'Units', 'normalized', 'Position',[0.048 0.565 0.91 0.30],'fontunits','normalized', 'fontSize', 0.098);
-    ROI_4_disp_2 = uicontrol(ROI_4 , 'Style', 'listbox', 'String', lst_2,'Max', 100,'Units', 'normalized', 'Position',[0.048 0.14 0.91 0.25],'fontunits','normalized', 'fontSize', 0.10);
+    ROI_4_disp_1 = uicontrol(ROI_4 , 'Style', 'listbox', 'String', lst_1(:,2,1),'Max', 100,'Units', 'normalized', 'Position',[0.048 0.565 0.91 0.30],'fontunits','normalized', 'fontSize', 0.098, 'Value', [], 'callback', @action_select_1);
+    ROI_4_disp_2 = uicontrol(ROI_4 , 'Style', 'listbox', 'String', lst_2,'Max', 100,'Units', 'normalized', 'Position',[0.048 0.14 0.91 0.25],'fontunits','normalized', 'fontSize', 0.10, 'Value', [], 'callback', @action_select_2);
 
-    ROI_4_S1 = uicontrol(ROI_4,'Style','text','String', ROI_4_INFO1,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.54);
-    ROI_4_S1a = uicontrol(ROI_4,'Style','text','String', ROI_4_INFO2,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.64,'HorizontalAlignment', 'left');
-    ROI_4_S2 = uicontrol(ROI_4,'Style','text','String', '% threshold','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.44,'HorizontalAlignment', 'left');
-    ROI_4_S3 = uicontrol(ROI_4,'Style','text','String', 'Removed ROIs:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.50,'HorizontalAlignment', 'left');
+    ROI_4_S1 = uicontrol(ROI_4,'Style','text','String', ROI_4_INFO1,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.54,'Position',[0.10 0.92 0.8 0.05],'backgroundcolor',get(ROI_4,'color'));
+    ROI_4_S1a = uicontrol(ROI_4,'Style','text','String', ROI_4_INFO2,'Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.64,'HorizontalAlignment', 'left','Position',[0.048 0.87 0.91 0.040],'backgroundcolor',get(ROI_4,'color'));
+    ROI_4_S2 = uicontrol(ROI_4,'Style','text','String', '% threshold','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.44,'HorizontalAlignment', 'left','Position',[0.84 0.475 0.13 0.055],'backgroundcolor',get(ROI_4,'color'));
+    ROI_4_S3 = uicontrol(ROI_4,'Style','text','String', 'Removed ROIs:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.50,'HorizontalAlignment', 'left','Position',[0.05 0.395 0.2 0.05],'backgroundcolor',get(ROI_4,'color'));
     
-    ROI_4_REM_SEL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Remove selected','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_4_REM_THRS = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Remove ROIs under % threshold','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_4_OK = uicontrol(ROI_4,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_4_RET_SEL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Return selected','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_4_RET_ALL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Return all','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_4_A = uicontrol(ROI_4,'Style','edit','String',[],'Units', 'normalized','fontunits','normalized', 'fontSize', 0.42,'HorizontalAlignment','center');
-    
-    ROI_4_S1.Position = [0.10 0.92 0.8 0.05]; 
-    ROI_4_S1a.Position = [0.048 0.87 0.91 0.040]; 
-    ROI_4_REM_SEL.Position = [0.047 0.48 0.24 0.063]; 
-    ROI_4_REM_THRS.Position = [0.32 0.48 0.40 0.063]; 
-    ROI_4_A.Position = [0.74 0.48 0.1 0.06]; 
-    ROI_4_S2.Position = [0.84 0.475 0.13 0.055]; 
-    ROI_4_S3.Position = [0.05 0.395 0.2 0.05]; 
-    ROI_4_OK.Position = [0.047 0.056 0.24 0.063]; 
-    ROI_4_RET_SEL.Position = [0.39 0.056 0.24 0.063]; 
-    ROI_4_RET_ALL.Position = [0.72 0.056 0.24 0.063]; 
-    
-    set(ROI_4_S1,'backgroundcolor',get(ROI_4,'color'));
-    set(ROI_4_S1a,'backgroundcolor',get(ROI_4,'color'));
-    set(ROI_4_S2,'backgroundcolor',get(ROI_4,'color'));
-    set(ROI_4_S3,'backgroundcolor',get(ROI_4,'color'));
-    set(ROI_4_disp_1, 'Value', []);
-    set(ROI_4_disp_1, 'callback', @action_select_1);
-    set(ROI_4_disp_2, 'Value', []);
-    set(ROI_4_disp_2, 'callback', @action_select_2);
-    set(ROI_4_REM_SEL, 'callback', @action_3);
-    set(ROI_4_REM_THRS, 'callback', @action_4);
-    set(ROI_4_RET_SEL, 'callback', @action_6);
-    set(ROI_4_RET_ALL, 'callback', @action_7);
-    set(ROI_4_OK, 'callback', @action_8);
+    ROI_4_REM_SEL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Remove selected','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.047 0.48 0.24 0.063], 'callback', @action_3);
+    ROI_4_REM_THRS = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Remove ROIs under % threshold','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.32 0.48 0.40 0.063], 'callback', @action_4);
+    ROI_4_OK = uicontrol(ROI_4,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.047 0.056 0.24 0.063], 'callback', @action_8);
+    ROI_4_RET_SEL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Return selected','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.39 0.056 0.24 0.063], 'callback', @action_6);
+    ROI_4_RET_ALL = uicontrol(ROI_4,'Style','pushbutton', 'String', 'Return all','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.72 0.056 0.24 0.063], 'callback', @action_7);
+    ROI_4_A = uicontrol(ROI_4,'Style','edit','String',[],'Units', 'normalized','fontunits','normalized', 'fontSize', 0.42,'HorizontalAlignment','center','Position',[0.74 0.48 0.1 0.06]);
+
     movegui(ROI_4,'center');    
     
     function action_select_1(~,~)
@@ -420,13 +362,11 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
         selection_1 = index;      
     end
 
-
     function action_select_2(~,~)
         index = get(ROI_4_disp_2, 'Value');  % Retrieves the users selection LIVE
         selection_2 = index;             
     end
-    
-    
+   
     function action_3(~,~)
         
         % Checking if there is a selection from the user
@@ -538,19 +478,11 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
             
             thres = str2double(name);
             
-            
-            
             if isnan(thres)
-                
                 warning('Entered threshold should be a numeric character, please re-enter');
-                
             elseif (thres<0) | (thres>100)
-                warning('Enetered threshold is beyond the bounds, please enter a threshold between 0 and 100%');
-                
+                warning('Entered threshold is beyond the bounds, please enter a threshold between 0 and 100%');
             else
-                
-
-                
                 sz_rd = size(lst_1);
                 bpm = [];
                 ctr_g = 1;
@@ -562,8 +494,7 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
                 end
                 lst_3 = lst_1(bpm, :, :);
                 
-                
-                % compiling the removal list
+                % Compiling the removal list
                 if isempty(lst_2)
                     % if removing for the first time
                     lst_2 = vertcat(lst_2, lst_3); 
@@ -618,26 +549,25 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
                 end
                 set(ROI_4_disp_2, 'String', lst_2(:,2,1));
                 % Logical condition to check if newly selected conditions have been added
-                if new_ones(1) == 2
-                        g_check = size(lst_2);
+                if new_ones(1) == 2 && size(lst_2,1) ~= 0
+                        g_check = size(lst_2); 
                         fprintf('ROIs selected: %d \n', g_check(1));
+                        disp('do we reach here');
+                        assignin('base', 'new_ones', new_ones);
+                        assignin('base', 'lst_2', lst_2);
+                        assignin('base', 'lst_3', lst_3);
+                elseif new_ones(1) == 2 && size(lst_2,1) == 0
+                        warning('ROIs below this threshold do not exist');
                     elseif new_ones(1) == 0
                         warning('All ROIs below this threshold have already been removed');
                     else
-                        fprintf('%d',new_ones(1));
-                        fprintf(' ROIs selected at threshold %d ', thres); 
-                        fprintf('%% \n');
-                        
-                    end 
+                        fprintf('%d ROIs selected at threshold %d \n', new_ones(1),thres);     
+                end 
                 end
-                                   
-            
         else
             warning('Threshold not entered or is invalid, please re-enter');
         end
-
     end
-
 
     function action_6(~,~)
         
@@ -646,7 +576,6 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
         elseif isempty(selection_2)
             warning('No ROIs selected to return');
         else
-            
             if length(selection_2) >= 2
                 hippo = 0;
                 for c = 1:length(selection_2)
@@ -680,8 +609,7 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
             lst_2 = {};
             set(ROI_4_disp_2, 'String', lst_2);
             set(ROI_4_disp_2, 'Value', []);
-            fprintf('%d',lion(1));
-            fprintf(' ROIs have been returned \n');
+            fprintf('%d ROIs have been returned \n',lion(1));
         end
     end
 
@@ -703,11 +631,8 @@ function [EXPORT] = ROI_F4(ROI_set, CTR)
             close(ROI_4);
         end
     end
-    
-    
-
+        
     uiwait();
-    
-
+   
 end
 

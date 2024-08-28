@@ -129,7 +129,7 @@ switch tmfc.defaults.parallel
 end
 
 if tmfc.defaults.analysis == 1 || tmfc.defaults.analysis == 2
-    if ~isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR'))
+    if ~isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR'))
         mkdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','asymmetrical'));
         mkdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','ROI_to_ROI','symmetrical'));
     end
@@ -137,14 +137,14 @@ end
 
 if tmfc.defaults.analysis == 1 || tmfc.defaults.analysis == 3
     for i = 1:R
-        if ~isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','Seed_to_voxel',tmfc.ROI_set(ROI_set_number).ROIs(i).name))
+        if ~isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','Seed_to_voxel',tmfc.ROI_set(ROI_set_number).ROIs(i).name))
             mkdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','Seed_to_voxel',tmfc.ROI_set(ROI_set_number).ROIs(i).name));
         end
     end
 end
 
 for i = 1:R
-    if ~isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','GLM_batches',tmfc.ROI_set(ROI_set_number).ROIs(i).name))
+    if ~isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','GLM_batches',tmfc.ROI_set(ROI_set_number).ROIs(i).name))
         mkdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR','GLM_batches',tmfc.ROI_set(ROI_set_number).ROIs(i).name));
     end
 end
@@ -159,7 +159,7 @@ for i = start_sub:N
     SPM = load(tmfc.subjects(i).path);
     % Loop through ROIs
     for j = 1:R
-        if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR',['Subject_' num2str(i,'%04.f')],tmfc.ROI_set(ROI_set_number).ROIs(j).name))
+        if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR',['Subject_' num2str(i,'%04.f')],tmfc.ROI_set(ROI_set_number).ROIs(j).name))
             rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'gPPI_FIR',['Subject_' num2str(i,'%04.f')],tmfc.ROI_set(ROI_set_number).ROIs(j).name),'s');
         end
         % Loop through conditions of interest
@@ -524,8 +524,8 @@ function cleanMeUp()
         set([GUI.TMFC_GUI_B1, GUI.TMFC_GUI_B2, GUI.TMFC_GUI_B3, GUI.TMFC_GUI_B4,...
             GUI.TMFC_GUI_B5a, GUI.TMFC_GUI_B5b, GUI.TMFC_GUI_B6, GUI.TMFC_GUI_B7,...
             GUI.TMFC_GUI_B8, GUI.TMFC_GUI_B9, GUI.TMFC_GUI_B10, GUI.TMFC_GUI_B11,...
-            GUI.TMFC_GUI_B12,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,GUI.TMFC_GUI_B14a...
-            GUI.TMFC_GUI_B14b], 'Enable', 'on');
+            GUI.TMFC_GUI_B12a,GUI.TMFC_GUI_B12b,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,...
+            GUI.TMFC_GUI_B14a,GUI.TMFC_GUI_B14b], 'Enable', 'on');
         delete(findall(0,'type', 'Figure','Tag', 'tmfc_waitbar'));
     end
     try                                                                 

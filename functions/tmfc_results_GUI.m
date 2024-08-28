@@ -26,7 +26,7 @@ if nargin == 0 % Variant 1 CLI & Variant 2 GUI
            clear file 
        end
    else
-       warning('Selected .mat file is empt or not in TMFC Resulst format, Please select again');
+       warning('Selected .mat file is empty or not in TMFC results format, Please select again');
        clear file 
    end
     

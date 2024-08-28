@@ -134,6 +134,7 @@ if isempty(findobj('Tag', 'TMFC_GUI')) == 1
     set(handles.TMFC_GUI_B13b, 'callback', {@save_project, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B14a, 'callback', {@change_paths, handles.TMFC_GUI});
     set(handles.TMFC_GUI_B14b, 'callback', {@settings, handles.TMFC_GUI});    
+    %warning('off','backtrace')
 else
     % Warning prompt if user tries to open TMFC when already running
     figure(findobj('Tag', 'TMFC_GUI')); 
@@ -271,7 +272,7 @@ function ROI(ButtonH, EventData, TMFC_GUI)
                 tmfc = update_gPPI(tmfc);
             else
                 % If user cancels operation
-                fprintf('\nROIs have not been selected\n');
+                fprintf('\nNew ROI set has not been selected\n');
             end
        end
    
@@ -295,7 +296,7 @@ end % Closing ROI selection
 
 function VOI(ButtonH, EventData, TMFC_GUI)
 % Checking for subjects selection
-     try 
+     %try 
          
         % Change to project directory & Freeze TMFC window
         cd(tmfc.project_path);       
@@ -427,11 +428,11 @@ function VOI(ButtonH, EventData, TMFC_GUI)
                                     % VOI
                                     rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'VOIs'),'s');                                
                                     % PPIs
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'),'s');
                                     end
                                     % gPPI
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'),'s');
                                     end
                                     % gPPI-FIR
@@ -491,11 +492,11 @@ function VOI(ButtonH, EventData, TMFC_GUI)
                                 try
                                     rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'VOIs'),'s');                             
                                     % PPIs
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'PPIs'),'s');
                                     end
                                     % gPPI
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'gPPI'),'s');
                                     end
                                     % gPPI-FIR
@@ -535,9 +536,9 @@ function VOI(ButtonH, EventData, TMFC_GUI)
            warning('Please select subjects to continue with VOI computation');
         end
                 
-     catch
-         warning('Please select subjects & project path to perform VOI computation');
-     end
+     %catch
+     %    warning('Please select subjects & project path to perform VOI computation');
+     %end
      
      % Unfreeze TMFC Main Window
      MW_Freeze(0);
@@ -1139,7 +1140,7 @@ function LSS_GLM(ButtonH, EventData, TMFC_GUI)
                                 % Remove Previously processed LSS files
                                 try
                                     rmdir(fullfile(tmfc.project_path,'LSS_regression'),'s');
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'),'s');
                                     end
                                     fprintf('\nDeleting old files\n');
@@ -1189,7 +1190,7 @@ function LSS_GLM(ButtonH, EventData, TMFC_GUI)
                                 % Remove Previously processed LSS files
                                 try
                                     rmdir(fullfile(tmfc.project_path,'LSS_regression'),'s');
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS'),'s');
                                     end
                                     disp('Deleting old files');
@@ -1498,7 +1499,7 @@ function FIR(ButtonH, EventData, TMFC_GUI)
                                 % Remove previously processed files
                                 try
                                     rmdir(fullfile(tmfc.project_path,'FIR_regression'),'s');
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'),'s');
                                     end
                                     try
@@ -1560,7 +1561,7 @@ function FIR(ButtonH, EventData, TMFC_GUI)
                                 % Remove previously processed files
                                 try
                                     rmdir(fullfile(tmfc.project_path,'FIR_regression'),'s');
-                                    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'))
+                                    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'))
                                         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BGFC'),'s');
                                     end
                                     try
@@ -1918,7 +1919,7 @@ function LSS_FIR(ButtonH, EventData, TMFC_GUI)
                                     % Remove previously generated files & directories
                                     try
                                         rmdir(fullfile(tmfc.project_path,'LSS_regression_after_FIR'),'s');
-                                        if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'))
+                                        if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'))
                                             rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'),'s');
                                         end
                                         fprintf('\nDeleting old files\n');
@@ -1968,7 +1969,7 @@ function LSS_FIR(ButtonH, EventData, TMFC_GUI)
                                     % Remove previously generated files & directories
                                     try
                                         rmdir(fullfile(tmfc.project_path,'LSS_regression_after_FIR'),'s');
-                                        if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'))
+                                        if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'))
                                             rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(tmfc.ROI_set_number).set_name,'BSC_LSS_after_FIR'),'s');
                                         end
                                         disp('Deleting old files');
@@ -2173,13 +2174,19 @@ function open_project(ButtonH, EventData, TMFC_GUI)
 
         % Get the name of the variable as in file 
         variable_name_L = fieldnames(loaded_data_L);                
+           
+        if strcmp('tmfc', variable_name_L{1}) 
+            
+            % Get value of the variable as in file
+            tmfc = loaded_data_L.(variable_name_L{1});      
 
-        % Get value of the variable as in file
-        tmfc = loaded_data_L.(variable_name_L{1});      
-
-        % Evaluate file & Update TMFC, TMFC window with progress
-        tmfc = evaluate_file(tmfc);
-        fprintf('Successfully loaded file "%s.m"\n', filename_LO);
+            % Evaluate file & Update TMFC, TMFC window with progress
+            tmfc = evaluate_file(tmfc);
+            fprintf('Successfully loaded file "%s.m"\n', filename_LO);
+            
+        else
+            warning('Selected file is not in TMFC format, please select again');
+        end
     else
         warning('No file selected to load');
     end
@@ -2202,7 +2209,7 @@ function save_stat = save_project(ButtonH, EventData, TMFC_GUI)
     
     % Check if FileName or Path is missing or not available 
     if isequal(filename_SO, 0) || isequal(pathname_SO, 0)
-        error('TMFC variable not saved, File name or Save Directory not selected');
+        warning('TMFC variable not saved, File name or Save Directory not selected');
     
     else
         % If all data is available
@@ -2261,8 +2268,8 @@ function settings(ButtonH, EventData, TMFC_GUI)
     % Textual Data to be displayed on the settings window
     SET_TEXT_1 = {'Parallel computing use Parallel Computing Toolbox. The number of workers in a parallel pool can be changed in MATLAB settings.'};
     SET_TEXT_2 = {'This option temporary changes resmem variable in spm_defaults, which governing whether temporary files during GLM estimation are stored on disk or kept in memory. If you have enough available RAM, not writing the files to disk will speed the estimation.'};
-    SET_TEXT_3a = {'Max RAM temporary changes maxmem variable in spm_defaults, which indicates how much memory can be used at the same time during GLM estimation. If your computer has a large amount of RAM, you can increase that memory setting:'};
-    SET_TEXT_3b = {'• 2^31 = 2GB','• 2^32 = 4GB', '• 2^33 = 8GB','• 2^34 = 16GB','• 2^35 = 32GB'};
+    SET_TEXT_3a = {'Max RAM temporary changes maxmem�variable in spm_defaults, which indicates how much memory can be used at the same time during GLM estimation. If your computer has a large amount of RAM, you can increase that memory setting:'};
+    SET_TEXT_3b = {'* 2^31 = 2GB','* 2^32 = 4GB', '* 2^33 = 8GB','* 2^34 = 16GB','* 2^35 = 32GB'};
     SET_TEXT_4 = {'Perform seed-to-voxel or ROI-to-ROI analysis or both. Applies to gPPI and BSC methods.','',...
         'Seed-to-voxel gPPI is computationally expensive and can take a long time as it estimates the gPPI model parameters for each voxel.','',...
         'Seed-to-voxel BSC calculates relatively fast (about as ROI-to-ROI analysis) since voxel-wise correlations are not computationally expensive.'};
@@ -2277,7 +2284,7 @@ function settings(ButtonH, EventData, TMFC_GUI)
     TMFC_SET_P2 = uicontrol(TMFC_SET,'Style','popupmenu', 'String', SET_STORAGE ,'Units', 'normalized', 'Position',[0.048 0.775 0.90 0.07],'fontunits','normalized', 'fontSize', 0.265);
     TMFC_SET_P4 = uicontrol(TMFC_SET,'Style','popupmenu', 'String', SET_SEED ,'Units', 'normalized', 'Position',[0.048 0.282 0.90 0.07],'fontunits','normalized', 'fontSize', 0.265);
     
-    TMFC_SET_OK = uicontrol(TMFC_SET,'Style', 'pushbutton', 'String', 'OK', 'Units', 'normalized', 'Position', [0.3 0.03 0.40 0.05],'FontUnits','normalized','FontSize',0.33);
+    TMFC_SET_OK = uicontrol(TMFC_SET,'Style', 'pushbutton', 'String', 'OK', 'Units', 'normalized', 'Position', [0.3 0.03 0.40 0.05],'FontUnits','normalized','FontSize',0.33,'callback', @OK_SYNC);
     TMFC_SET_E1 = uicontrol(TMFC_SET,'Style','edit','String', tmfc.defaults.maxmem,'Units', 'normalized', 'HorizontalAlignment', 'center','Position',[0.72 0.615 0.22 0.05],'fontunits','normalized', 'fontSize', 0.38);
     
     TMFC_SET_S1 = uicontrol(TMFC_SET,'Style','text','String', SET_TEXT_1,'Units', 'normalized', 'Position',[0.05 0.87 0.90 0.07],'fontunits','normalized','fontSize', 0.245, 'HorizontalAlignment', 'left','backgroundcolor','w');
@@ -2287,10 +2294,6 @@ function settings(ButtonH, EventData, TMFC_GUI)
     TMFC_SET_S3_3 = uicontrol(TMFC_SET,'Style','text','String', SET_TEXT_3b,'Units', 'normalized', 'Position',[0.39 0.38 0.27 0.11],'fontunits','normalized','fontSize', 0.15, 'HorizontalAlignment', 'left','backgroundcolor','w');
     TMFC_SET_S4 = uicontrol(TMFC_SET,'Style','text','String', SET_TEXT_4,'Units', 'normalized', 'Position',[0.05 0.11 0.90 0.20],'fontunits','normalized','fontSize', 0.088, 'HorizontalAlignment', 'left','backgroundcolor','w');
     
-    set(TMFC_SET_OK , 'callback', @OK_SYNC);   
-
-
-
     TMFC_SET_COPY = tmfc;
 
     % The following functions perform Synchronization after OK button has been pressed 
@@ -2299,73 +2302,78 @@ function settings(ButtonH, EventData, TMFC_GUI)
        % SYNC: Computation type
        % Check status of string in stat box -> if changed -> SWAP
        % details -> Change TMFC variable -> END          
-       
-       C_1 = (TMFC_SET_P1.String(TMFC_SET_P1.Value));
-       if strcmp(C_1{1},'Sequential computing')
+
+       C_1{1} = get(TMFC_SET_P1, 'String');
+       C_1{2} = get(TMFC_SET_P1, 'Value');
+       if strcmp(C_1{1}(C_1{2}),'Sequential computing')
            SET_COMPUTING = {'Sequential computing','Parallel computing'};
            set(TMFC_SET_P1, 'String', SET_COMPUTING);
            tmfc.defaults.parallel = 0;
 
-       elseif strcmp(C_1{1},'Parallel computing')
+       elseif strcmp(C_1{1}(C_1{2}),'Parallel computing')
            SET_COMPUTING = {'Parallel computing','Sequential computing',};
            set(TMFC_SET_P1, 'String', SET_COMPUTING);
            tmfc.defaults.parallel = 1;
        end
+       clear C_1
 
 
        % SYNC: Storage type
        % Check status of string in stat box -> if changed -> SWAP
        % details -> Change TMFC variable -> END
-       C_2 = (TMFC_SET_P2.String(TMFC_SET_P2.Value));
-       if strcmp(C_2{1}, 'Store temporary files for GLM estimation in RAM')
+       C_2{1} = get(TMFC_SET_P2, 'String');
+       C_2{2} = get(TMFC_SET_P2, 'Value');
+       if strcmp(C_2{1}(C_2{2}), 'Store temporary files for GLM estimation in RAM')
            SET_STORAGE = {'Store temporary files for GLM estimation in RAM', 'Store temporary files for GLM estimation on disk'};
            set(TMFC_SET_P2, 'String', SET_STORAGE);
            tmfc.defaults.resmem =  true;
 
-       elseif strcmp(C_2{1}, 'Store temporary files for GLM estimation on disk')
+       elseif strcmp(C_2{1}(C_2{2}), 'Store temporary files for GLM estimation on disk')
            SET_STORAGE = {'Store temporary files for GLM estimation on disk','Store temporary files for GLM estimation in RAM'};
            set(TMFC_SET_P2, 'String', SET_STORAGE);
            tmfc.defaults.resmem =  false;
        end
-       
+       clear C_2
        
        % SYNC: Maximum Memory Value
        % Check status of string in stat box -> if changed -> SWAP
        % details -> Change TMFC variable -> END
        DG4_STR = get(TMFC_SET_E1,'String');
        DG4 = eval(DG4_STR);
-       if DG4 > 2^30
+       if DG4 > 2^32
            set(TMFC_SET_E1, 'String', DG4_STR);
            tmfc.defaults.maxmem = DG4;
        end
-
-       C_4 = (TMFC_SET_P4.String(TMFC_SET_P4.Value));
-       if strcmp(C_4{1}, 'Seed-to-voxel and ROI-to-ROI')
+       
+       C_4{1} = get(TMFC_SET_P4, 'String');
+       C_4{2} = get(TMFC_SET_P4, 'Value');
+       if strcmp(C_4{1}(C_4{2}), 'Seed-to-voxel and ROI-to-ROI')
            SET_SEED = {'Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only','Seed-to-voxel only'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  1;
 
-       elseif strcmp(C_4{1}, 'ROI-to-ROI only')
+       elseif strcmp(C_4{1}(C_4{2}), 'ROI-to-ROI only')
            SET_SEED = {'ROI-to-ROI only','Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  2;
-       elseif strcmp(C_4{1}, 'Seed-to-voxel only')
+           
+       elseif strcmp(C_4{1}(C_4{2}), 'Seed-to-voxel only')
            SET_SEED = {'Seed-to-voxel only','Seed-to-voxel and ROI-to-ROI','ROI-to-ROI only'};
            set(TMFC_SET_P4, 'String', SET_SEED);
            tmfc.defaults.analysis =  3;
        end
+       clear C_4
        
+       % Comparision 
        if TMFC_SET_COPY.defaults.parallel == tmfc.defaults.parallel &&...
           TMFC_SET_COPY.defaults.maxmem == tmfc.defaults.maxmem &&...
-          TMFC_SET_COPY.defaults.resmem == tmfc.defaults.resmem&&...
+          TMFC_SET_COPY.defaults.resmem == tmfc.defaults.resmem &&...
           TMFC_SET_COPY.defaults.analysis == tmfc.defaults.analysis 
            disp('Settings have not been changed');
        else
            disp('Settings have been updated');
        end
-       
        close(TMFC_SET);
-       
     end   
 end
 
@@ -2379,20 +2387,13 @@ function close_GUI(ButtonH, EventData, TMFC_GUI)
     % Exit Dialouge GUI
     EXIT_PROMPT = figure('Name', 'TMFC: Exit', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.38 0.44 0.20 0.15],'Resize','off','color','w','MenuBar', 'none', 'ToolBar', 'none', 'Tag', 'EXIT_FIN', 'WindowStyle','modal'); %X Y W H
 
-    % Content - Can be changed to a single sentence using \html or
-    % sprtinf
-    EX_Q1 = uicontrol(EXIT_PROMPT,'Style','text','String', 'Would you like to save your progress','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.04 0.55 0.94 0.260]);
-    EX_Q2 = uicontrol(EXIT_PROMPT,'Style','text','String', 'before exiting TMFC toolbox?', 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38,'Position',[0.10 0.40 0.80 0.260]);
+    % Content - Can be changed to a single sentence using \html or sprtinf
+    EX_Q1 = uicontrol(EXIT_PROMPT,'Style','text','String', 'Would you like to save your progress','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.04 0.55 0.94 0.260],'backgroundcolor',get(EXIT_PROMPT,'color'));
+    EX_Q2 = uicontrol(EXIT_PROMPT,'Style','text','String', 'before exiting TMFC toolbox?', 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38,'Position',[0.10 0.40 0.80 0.260],'backgroundcolor',get(EXIT_PROMPT,'color'));
 
     % Buttons of the GUI
-    EX_YES = uicontrol(EXIT_PROMPT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.16 0.18 0.300 0.200]);
-    EX_NO = uicontrol(EXIT_PROMPT,'Style','pushbutton', 'String', 'No','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.57 0.18 0.300 0.200]);
-
-    % Colour of Text boxes & actions of buttons
-    set([EX_Q1,EX_Q2],'backgroundcolor',get(EXIT_PROMPT,'color'));
-    set(EX_NO, 'callback', @EX_WO_SAVE);
-    set(EX_YES, 'callback', @EX_W_SAVE);
-       
+    EX_YES = uicontrol(EXIT_PROMPT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.16 0.18 0.300 0.200],'callback', @EX_W_SAVE);
+    EX_NO = uicontrol(EXIT_PROMPT,'Style','pushbutton', 'String', 'No','Units', 'normalized','fontunits','normalized', 'fontSize', 0.40,'Position',[0.57 0.18 0.300 0.200],'callback', @EX_WO_SAVE);     
         
     % Function to Exit toolbox WITHOUT saving TMFC variable
     function EX_WO_SAVE(~,~)
@@ -3067,7 +3068,7 @@ function Seed_ROI_condition(tmfc, i, case_app)
              % ROI to ROI generation 
              sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, case_app, i, tmfc.ROI_set_number);                           
              if sub_check_roi(length(tmfc.subjects)) == 1
-                 fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
+                 fprintf('ROI-ROI contrasts succefully generated for contrast No: %d\n', i);
              else
                  disp('ROI-ROI contrasts failed');
              end
@@ -3075,7 +3076,7 @@ function Seed_ROI_condition(tmfc, i, case_app)
              % Seed to Voxel generation
              sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, case_app,i, tmfc.ROI_set_number);
               if sub_check_svox(length(tmfc.subjects)) == 1
-                 fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
+                 fprintf('Seed-Voxel contrasts succefully generated for contrast No: %d\n', i);
              else
                  disp('Seed-Voxel contrasts failed');
              end
@@ -3084,7 +3085,7 @@ function Seed_ROI_condition(tmfc, i, case_app)
              % ROI to ROI generation 
              sub_check_roi = tmfc_ROI_to_ROI_contrast(tmfc, case_app, i, tmfc.ROI_set_number);                           
              if sub_check_roi(length(tmfc.subjects)) == 1
-                 fprintf('ROI-ROI contrasts succefully generated for contrast №: %d\n', i);
+                 fprintf('ROI-ROI contrasts succefully generated for contrast No: %d\n', i);
              else
                  disp('ROI-ROI contrasts failed');
              end
@@ -3094,7 +3095,7 @@ function Seed_ROI_condition(tmfc, i, case_app)
              % Seed to Voxel generation
              sub_check_svox = tmfc_seed_to_voxel_contrast(tmfc, case_app,i, tmfc.ROI_set_number);
               if sub_check_svox(length(tmfc.subjects)) == 1
-                 fprintf('Seed-Voxel contrasts succefully generated for contrast №: %d\n', i);
+                 fprintf('Seed-Voxel contrasts succefully generated for contrast No: %d\n', i);
              else
                  disp('Seed-Voxel contrasts failed');
               end
@@ -3111,13 +3112,13 @@ end
 
 %% Project Path Selection Diagloue 
 function tmfc_select_project_path(S)
-% Function to show Warning Dialouge for selection of subjects project path 
+
+    % Function to show Warning Dialouge for selection of subjects project path 
     TMFC_SS_PP = figure('Name', 'Select project paths', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.40 0.45 0.24 0.14],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off','WindowStyle', 'modal','CloseRequestFcn', @OKAY, 'Tag', 'TMFC_project_path');
     PP_details = {'Next, select the project path where all results and temporary files will be stored'};
     TMFC_SS_PP_S1 = uicontrol(TMFC_SS_PP,'Style','text','String',strcat(num2str(S), ' subjects selected'),'Units', 'normalized', 'Position',[0.30 0.72 0.40 0.17],'backgroundcolor','w','fontunits','normalized','fontSize', 0.64,'ForegroundColor',[0.219, 0.341, 0.137]);
     TMFC_SS_PP_S2 = uicontrol(TMFC_SS_PP,'Style','text','String',PP_details,'Units', 'normalized', 'Position',[0.055 0.38 0.90 0.30],'backgroundcolor','w','fontunits','normalized','fontSize', 0.38);
-    OK = uicontrol(TMFC_SS_PP,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.35 0.12 0.3 0.2],'fontunits','normalized','fontSize', 0.42);
-    set(OK, 'callback', @OKAY);
+    OK = uicontrol(TMFC_SS_PP,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.35 0.12 0.3 0.2],'fontunits','normalized','fontSize', 0.42,'callback', @OKAY);
     movegui(TMFC_SS_PP,'center');
     
     function OKAY(~,~)
@@ -3157,33 +3158,16 @@ function [new_flag, position] = ROI_set(LIST_SETS,~)
 % Function to select current ROI set or add new ROI Set
     new_flag = 0;
     position = 0;
+    selection_3 = {};
     
     ROI_set_GUI = figure('Name', 'Select ROIs', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.35 0.40 0.28 0.35],'color','w','MenuBar', 'none','ToolBar', 'none');
+    ROI_set_GUI_disp = uicontrol(ROI_set_GUI , 'Style', 'listbox', 'String', LIST_SETS(:,2),'Units', 'normalized', 'Position',[0.048 0.25 0.91 0.49],'fontunits','normalized', 'fontSize', 0.09,'Value', 1, 'callback', @action_select_M1);
+    ROI_set_GUI_S1 = uicontrol(ROI_set_GUI,'Style','text','String', 'Select ROI set','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.54,'Position',[0.31 0.85 0.400 0.09],'backgroundcolor',get(ROI_set_GUI,'color'));
+    ROI_set_GUI_S2 = uicontrol(ROI_set_GUI,'Style','text','String', 'Sets:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.60,'Position',[0.04 0.74 0.100 0.08],'backgroundcolor',get(ROI_set_GUI,'color'));
+    ROI_set_GUI_OK = uicontrol(ROI_set_GUI,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.16 0.10 0.28 0.10], 'callback', @ROI_set_OK);
+    ROI_set_GUI_Select = uicontrol(ROI_set_GUI,'Style','pushbutton', 'String', 'Add new ROI set','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4,'Position',[0.56 0.10 0.28 0.10], 'callback', @ROI_set_SELECT);
 
-    ROI_set_GUI_disp = uicontrol(ROI_set_GUI , 'Style', 'listbox', 'String', LIST_SETS(:,2),'Units', 'normalized', 'Position',[0.048 0.25 0.91 0.49],'fontunits','normalized', 'fontSize', 0.09);
-
-    ROI_set_GUI_S1 = uicontrol(ROI_set_GUI,'Style','text','String', 'Select ROI set','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.54);
-    ROI_set_GUI_S2 = uicontrol(ROI_set_GUI,'Style','text','String', 'Sets:','Units', 'normalized', 'fontunits','normalized', 'fontSize', 0.60);
-    
-    ROI_set_GUI_OK = uicontrol(ROI_set_GUI,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-    ROI_set_GUI_Select = uicontrol(ROI_set_GUI,'Style','pushbutton', 'String', 'Add new ROI set','Units', 'normalized','fontunits','normalized', 'fontSize', 0.4);
-     
-    ROI_set_GUI_S1.Position = [0.31 0.85 0.400 0.09];
-    ROI_set_GUI_S2.Position = [0.04 0.74 0.100 0.08];
-     
-    ROI_set_GUI_OK.Position = [0.16 0.10 0.28 0.10]; % W H
-    ROI_set_GUI_Select.Position = [0.56 0.10 0.28 0.10];
-    
-    selection_3 = {};
-    set(ROI_set_GUI_disp, 'Value', 1);
-    selection_3 = 1;
-    
-    set(ROI_set_GUI_S1,'backgroundcolor',get(ROI_set_GUI,'color'));
-    set(ROI_set_GUI_S2,'backgroundcolor',get(ROI_set_GUI,'color'));
-    set(ROI_set_GUI_disp, 'callback', @action_select_M1);
-    
-    set(ROI_set_GUI_OK, 'callback', @ROI_set_OK);
-    set(ROI_set_GUI_Select, 'callback', @ROI_set_SELECT);
+    selection_3 = 1;    
     movegui(ROI_set_GUI,'center');
      
     function action_select_M1(~,~)
@@ -3203,8 +3187,7 @@ function [new_flag, position] = ROI_set(LIST_SETS,~)
         position = 0;
     end
     
-    uiwait();
-    
+    uiwait();  
 end
 
 %% Restart - Continue GUI Control Functions
@@ -3241,15 +3224,9 @@ function [STATUS] = tmfc_restart_GUI(option)
     end
     
     TMFC_RES = figure('Name', res_str_0, 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.38 0.44 0.18 0.14],'Resize','off','color','w','MenuBar', 'none', 'ToolBar', 'none', 'Tag', 'Restart_WIN','CloseRequestFcn', @CANCEL); %X Y W H
-    
-    %
-    TMFC_RES_S1 = uicontrol(TMFC_RES,'Style','text','String',res_str_1 ,'Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.40, 'Position', [0.10 0.55 0.80 0.260]);
-    TMFC_RES_OK = uicontrol(TMFC_RES,'Style','pushbutton','String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.48, 'Position', [0.14 0.22 0.320 0.20]);
-    TMFC_RES_CL = uicontrol(TMFC_RES,'Style','pushbutton', 'String', 'Cancel','Units', 'normalized','fontunits','normalized', 'fontSize', 0.48,'Position',[0.52 0.22 0.320 0.20]);
-
-    set(TMFC_RES_S1,'backgroundcolor',get(TMFC_RES,'color'));
-    set(TMFC_RES_CL, 'callback', @CANCEL);
-    set(TMFC_RES_OK, 'callback', @RESTART);
+    TMFC_RES_S1 = uicontrol(TMFC_RES,'Style','text','String',res_str_1 ,'Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.40, 'Position', [0.10 0.55 0.80 0.260],'backgroundcolor',get(TMFC_RES,'color'));
+    TMFC_RES_OK = uicontrol(TMFC_RES,'Style','pushbutton','String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.48, 'Position', [0.14 0.22 0.320 0.20],'callback', @RESTART);
+    TMFC_RES_CL = uicontrol(TMFC_RES,'Style','pushbutton', 'String', 'Cancel','Units', 'normalized','fontunits','normalized', 'fontSize', 0.48,'Position',[0.52 0.22 0.320 0.20],'callback', @CANCEL);
     movegui(TMFC_RES,'center');
 
     % Function to close the Window
@@ -3321,15 +3298,10 @@ function [STATUS] = tmfc_continue_GUI(INDEX, option)
     
     TMFC_CONT = figure('Name', res_str_0, 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.38 0.44 0.20 0.18],'Resize','off','color','w','MenuBar', 'none', 'ToolBar', 'none', 'Tag', 'Contd_FIR','CloseRequestFcn', @CANCEL); %X Y W H
 
-    TMFC_CONT_S1 = uicontrol(TMFC_CONT,'Style','text','String', res_str_1,'Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.10 0.55 0.80 0.260]);
-    TMFC_CONT_S2 = uicontrol(TMFC_CONT,'Style','text','String', strcat('subject №',num2str(INDEX),'?'), 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.10 0.40 0.80 0.260]);
-
-    TMFC_CONT_YES = uicontrol(TMFC_CONT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.28, 'Position',[0.12 0.15 0.320 0.270]);
-    TMFC_CONT_RESTART = uicontrol(TMFC_CONT,'Style','pushbutton', 'String', b_res,'Units', 'normalized','fontunits','normalized', 'fontSize', 0.28,'Position',[0.56 0.15 0.320 0.270]);
-
-    set([TMFC_CONT_S1,TMFC_CONT_S2],'backgroundcolor',get(TMFC_CONT,'color'));
-    set(TMFC_CONT_YES, 'callback', @CONTINUE);
-    set(TMFC_CONT_RESTART, 'callback', @RESTART);
+    TMFC_CONT_S1 = uicontrol(TMFC_CONT,'Style','text','String', res_str_1,'Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.10 0.55 0.80 0.260],'backgroundcolor',get(TMFC_CONT,'color'));
+    TMFC_CONT_S2 = uicontrol(TMFC_CONT,'Style','text','String', strcat('subject No',num2str(INDEX),'?'), 'Units','normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'fontSize', 0.38, 'Position',[0.10 0.40 0.80 0.260],'backgroundcolor',get(TMFC_CONT,'color'));
+    TMFC_CONT_YES = uicontrol(TMFC_CONT,'Style','pushbutton','String', 'Yes','Units', 'normalized','fontunits','normalized', 'fontSize', 0.28, 'Position',[0.12 0.15 0.320 0.270],'callback', @CONTINUE);
+    TMFC_CONT_RESTART = uicontrol(TMFC_CONT,'Style','pushbutton', 'String', b_res,'Units', 'normalized','fontunits','normalized', 'fontSize', 0.28,'Position',[0.56 0.15 0.320 0.270],'callback', @RESTART);
     movegui(TMFC_CONT,'center');
 
     function CANCEL(~,~)
@@ -3355,25 +3327,20 @@ function [STATUS] = tmfc_continue_GUI(INDEX, option)
             delete(TMFC_CONT);
         end
     end
-
-    
     uiwait();
 end
 
 %% Dialouge box for PPI recomputation explanation
 function PPI_recompute()
-TMFC_PPI_Diag = figure('Name', 'PPI', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.40 0.45 0.24 0.12],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off','WindowStyle', 'modal','CloseRequestFcn', @OKAY, 'Tag', 'PPI');
+    TMFC_PPI_Diag = figure('Name', 'PPI', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.40 0.45 0.24 0.12],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off','WindowStyle', 'modal','CloseRequestFcn', @OKAY, 'Tag', 'PPI');
     PPI_details = {'PPI computation completed. To change conditions of interest, recompute VOIs'};
     TMFC_PPI_S1 = uicontrol(TMFC_PPI_Diag,'Style','text','String',PPI_details,'Units', 'normalized', 'Position',[0.05 0.5 0.90 0.30],'backgroundcolor','w','fontunits','normalized','fontSize', 0.38);
-    OK = uicontrol(TMFC_PPI_Diag,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.38 0.18 0.23 0.2],'fontunits','normalized','fontSize', 0.48);
+    OK = uicontrol(TMFC_PPI_Diag,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.38 0.18 0.23 0.2],'fontunits','normalized','fontSize', 0.48,'callback', @OKAY);
     movegui(TMFC_PPI_Diag,'center');
-    set(OK, 'callback', @OKAY);
-
     function OKAY(~,~)
         delete(TMFC_PPI_Diag);
     end
     uiwait();
-
 end
 
 %% GUI to select Windows & Bins for FIR & gPPI FIR 
@@ -3399,20 +3366,13 @@ function [win, bin] = tmfc_FIR_GUI(cases)
     TMFC_BW = figure('Name', Title_BW, 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.38 0.44 0.22 0.18],'Resize','off',...
         'MenuBar', 'none', 'ToolBar', 'none','Tag','TMFC_WB_NUM', 'WindowStyle','modal','CloseRequestFcn', @TMFC_BW_stable_Exit); 
     set(gcf,'color','w');
-    
-    TMFC_BW_S1 = uicontrol(TMFC_BW,'Style','text','String', ST1,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.40, 'Position',[0.08 0.62 0.65 0.200]);
-    TMFC_BW_S2 = uicontrol(TMFC_BW,'Style','text','String', ST2,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.40,'Position',[0.08 0.37 0.65 0.200]);
+    TMFC_BW_S1 = uicontrol(TMFC_BW,'Style','text','String', ST1,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.40, 'Position',[0.08 0.62 0.65 0.200],'backgroundcolor',get(TMFC_BW,'color'));
+    TMFC_BW_S2 = uicontrol(TMFC_BW,'Style','text','String', ST2,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.40,'Position',[0.08 0.37 0.65 0.200],'backgroundcolor',get(TMFC_BW,'color'));
     TMFC_BW_E1 = uicontrol(TMFC_BW,'Style','edit','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'Position', [0.76 0.67 0.185 0.170], 'fontSize', 0.44);%,'InputType', 'digits');
     TMFC_BW_E2 = uicontrol(TMFC_BW,'Style','edit','Units', 'normalized', 'HorizontalAlignment', 'center','fontunits','normalized', 'Position', [0.76 0.42 0.185 0.170], 'fontSize', 0.44);
-    TMFC_BW_OK = uicontrol(TMFC_BW,'Style','pushbutton','String', 'OK','Units', 'normalized','fontunits','normalized','fontSize', 0.4, 'Position', [0.21 0.13 0.230 0.170]);
-    TMFC_BW_HELP = uicontrol(TMFC_BW,'Style','pushbutton', 'String', 'Help','Units', 'normalized','fontunits','normalized','fontSize', 0.4, 'Position', [0.52 0.13 0.230 0.170]);
-
-    set(TMFC_BW_S1,'backgroundcolor',get(TMFC_BW,'color'));
-    set(TMFC_BW_S2,'backgroundcolor',get(TMFC_BW,'color'));
-    set(TMFC_BW_OK, 'callback', @TMFC_BW_EXTRACT);
-    set(TMFC_BW_HELP, 'callback', @TMFC_BW_HELP_POP);
+    TMFC_BW_OK = uicontrol(TMFC_BW,'Style','pushbutton','String', 'OK','Units', 'normalized','fontunits','normalized','fontSize', 0.4, 'Position', [0.21 0.13 0.230 0.170],'callback', @TMFC_BW_EXTRACT);
+    TMFC_BW_HELP = uicontrol(TMFC_BW,'Style','pushbutton', 'String', 'Help','Units', 'normalized','fontunits','normalized','fontSize', 0.4, 'Position', [0.52 0.13 0.230 0.170],'callback', @TMFC_BW_HELP_POP);
     movegui(TMFC_BW,'center');
-
    
     function TMFC_BW_stable_Exit(~,~)
        win = NaN; 
@@ -3441,13 +3401,9 @@ function [win, bin] = tmfc_FIR_GUI(cases)
                 '(TR). Therefore, the number of FIR time bins is equal to:',''};
                 TMFC_BW_DETAILS_2 = {'Number of FIR bins = FIR window length/TR'};
 
-            TMFC_BW_LS2_DTS_1 = uicontrol(TMFC_BW_HELPWW,'Style','text','String', TMFC_BW_DETAILS,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.035, 'Position',[0.06 0.16 0.885 0.800]);
-            TMFC_BW_LS2_DTS_2 = uicontrol(TMFC_BW_HELPWW,'Style','text','String', TMFC_BW_DETAILS_2,'Units', 'normalized', 'HorizontalAlignment', 'Center','fontunits','normalized', 'fontSize', 0.30, 'Position',[0.06 0.10 0.885 0.10]);
-            TMFC_BW_LS2_OK = uicontrol(TMFC_BW_HELPWW,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.35, 'Position',[0.39 0.04 0.240 0.070]);
-
-            set(TMFC_BW_LS2_DTS_1,'backgroundcolor',get(TMFC_BW_HELPWW,'color'));
-            set(TMFC_BW_LS2_DTS_2,'backgroundcolor',get(TMFC_BW_HELPWW,'color'));
-            set(TMFC_BW_LS2_OK, 'callback', @TMFC_BW_CLOSE_LS2_OK);
+            TMFC_BW_LS2_DTS_1 = uicontrol(TMFC_BW_HELPWW,'Style','text','String', TMFC_BW_DETAILS,'Units', 'normalized', 'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.035, 'Position',[0.06 0.16 0.885 0.800],'backgroundcolor',get(TMFC_BW_HELPWW,'color'));
+            TMFC_BW_LS2_DTS_2 = uicontrol(TMFC_BW_HELPWW,'Style','text','String', TMFC_BW_DETAILS_2,'Units', 'normalized', 'HorizontalAlignment', 'Center','fontunits','normalized', 'fontSize', 0.30, 'Position',[0.06 0.10 0.885 0.10],'backgroundcolor',get(TMFC_BW_HELPWW,'color'));
+            TMFC_BW_LS2_OK = uicontrol(TMFC_BW_HELPWW,'Style','pushbutton', 'String', 'OK','Units', 'normalized','fontunits','normalized', 'fontSize', 0.35, 'Position',[0.39 0.04 0.240 0.070],'callback', @TMFC_BW_CLOSE_LS2_OK);
 
             function TMFC_BW_CLOSE_LS2_OK(~,~)
                 close(TMFC_BW_HELPWW);
@@ -3480,12 +3436,11 @@ end
 
 %% Dialouge box for BGFC recomputation explanation
 function recompute_BGFC(tmfc)
-TMFC_BGFC_Diag = figure('Name', 'BGFC', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.40 0.45 0.24 0.12],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off','WindowStyle', 'modal','CloseRequestFcn', @OKAY, 'Tag', 'BGFC');    
+
+    TMFC_BGFC_Diag = figure('Name', 'BGFC', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.40 0.45 0.24 0.12],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off','WindowStyle', 'modal','CloseRequestFcn', @OKAY, 'Tag', 'BGFC');    
     B1 = {strcat('BGFC computation completed using ',32,num2str(tmfc.FIR.window),' Windows & ',32,num2str(tmfc.FIR.bins),' Bins.'),'To change the number of windows & bins, recompute FIRs'};
     TMFC_BGFC_S1 = uicontrol(TMFC_BGFC_Diag,'Style','text','String',B1,'Units', 'normalized', 'Position',[0.05 0.5 0.90 0.30],'fontunits','normalized','fontSize', 0.38,'backgroundcolor','w');
-    OK = uicontrol(TMFC_BGFC_Diag,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.35 0.18 0.3 0.24],'fontunits','normalized','fontSize', 0.40);
-    
-    set(OK, 'callback', @OKAY);
+    OK = uicontrol(TMFC_BGFC_Diag,'Style','pushbutton', 'String', 'OK','Units', 'normalized', 'Position',[0.35 0.18 0.3 0.24],'fontunits','normalized','fontSize', 0.40,'callback', @OKAY);
     movegui(TMFC_BGFC_Diag,'center');
     
     function OKAY(~,~)

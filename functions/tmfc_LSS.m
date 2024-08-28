@@ -104,8 +104,8 @@ switch tmfc.defaults.parallel
             parpool
         end
         handles = waitbar(0,'Please wait...','Name','LSS regression','Tag','tmfc_waitbar');
-        D = parallel.pool.DataQueue;                                        % Creation of Parallel Pool 
-        afterEach(D, @tmfc_parfor_waitbar);                                 % Command to update Waitbar
+        %D = parallel.pool.DataQueue;                                        % Creation of Parallel Pool 
+        %afterEach(D, @tmfc_parfor_waitbar);                                 % Command to update Waitbar
         tmfc_parfor_waitbar(handles, N);     
         cleanupObj = onCleanup(@cleanMeUp);
 
@@ -125,11 +125,11 @@ for i = start_sub:N
     
     SPM = load(tmfc.subjects(i).path);
     
-    if isfolder(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')]))
+    if isdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')]))
         rmdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')]),'s');
     end
 
-    if ~isfolder(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')]))
+    if ~isdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')]))
         mkdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')],'Betas'));
         mkdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')],'GLM_batches'));
     end
@@ -173,7 +173,7 @@ for i = start_sub:N
         % Loop through trials of interest
         for k = 1:E
 
-            if isfolder(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')],['LSS_Sess_' num2str(sess_num(j)) '_Trial_' num2str(k)]))
+            if isdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')],['LSS_Sess_' num2str(sess_num(j)) '_Trial_' num2str(k)]))
                 rmdir(fullfile(tmfc.project_path,'LSS_regression',['Subject_' num2str(i,'%04.f')],['LSS_Sess_' num2str(sess_num(j)) '_Trial_' num2str(k)]),'s');
             end
                    
@@ -378,8 +378,8 @@ function cleanMeUp()
         set([GUI.TMFC_GUI_B1, GUI.TMFC_GUI_B2, GUI.TMFC_GUI_B3, GUI.TMFC_GUI_B4,...
             GUI.TMFC_GUI_B5a, GUI.TMFC_GUI_B5b, GUI.TMFC_GUI_B6, GUI.TMFC_GUI_B7,...
             GUI.TMFC_GUI_B8, GUI.TMFC_GUI_B9, GUI.TMFC_GUI_B10, GUI.TMFC_GUI_B11,...
-            GUI.TMFC_GUI_B12,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,GUI.TMFC_GUI_B14a...
-            GUI.TMFC_GUI_B14b], 'Enable', 'on');
+            GUI.TMFC_GUI_B12a,GUI.TMFC_GUI_B12b,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,...
+            GUI.TMFC_GUI_B14a,GUI.TMFC_GUI_B14b], 'Enable', 'on');
         delete(findall(0,'type', 'Figure','Tag', 'tmfc_waitbar'));
     end
     try                                                                 

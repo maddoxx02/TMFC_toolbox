@@ -43,33 +43,18 @@ end
         gPPI_E0  = uicontrol(gPPI_GUI,'Style','text','String', 'Select conditions of interest','Units', 'normalized', 'Position',[0.270 0.93 0.460 0.05],'fontunits','normalized', 'fontSize', 0.50,'backgroundcolor','w');
 
         gPPI_E1  = uicontrol(gPPI_GUI,'Style','text','String', 'All conditions:','Units', 'normalized', 'Position',[0.045 0.88 0.450 0.05],'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.50,'backgroundcolor','w');
-        gPPI_E1_lst = uicontrol(gPPI_GUI , 'Style', 'listbox', 'String', LST_1,'Max', 100,'Units', 'normalized', 'Position',[0.045 0.59 0.900 0.300],'fontunits','normalized', 'fontSize', 0.07);
+        gPPI_E1_lst = uicontrol(gPPI_GUI , 'Style', 'listbox', 'String', LST_1,'Max', 100,'Units', 'normalized', 'Position',[0.045 0.59 0.900 0.300],'fontunits','normalized', 'fontSize', 0.07,'Value', [],'callback', @action_select_1);
 
-        gPPI_ADD = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Add selected','Units', 'normalized','Position',[0.045 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
-        gPPI_ADA = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Add all','Units', 'normalized','Position',[0.360 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
-        gPPI_HELP = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Help','Units', 'normalized','Position',[0.680 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
+        gPPI_ADD = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Add selected','Units', 'normalized','Position',[0.045 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @action_3);
+        gPPI_ADA = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Add all','Units', 'normalized','Position',[0.360 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @action_4);
+        gPPI_HELP = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Help','Units', 'normalized','Position',[0.680 0.50 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @gPPI_H);
 
         gPPI_E2  = uicontrol(gPPI_GUI,'Style','text','String', 'Conditions of interest:','Units', 'normalized', 'Position',[0.045 0.425 0.450 0.05],'HorizontalAlignment', 'left','fontunits','normalized', 'fontSize', 0.50,'backgroundcolor','w');
-        gPPI_E2_lst = uicontrol(gPPI_GUI , 'Style', 'listbox', 'String', LST_2,'Max', 100,'Units', 'normalized', 'Position',[0.045 0.135 0.900 0.300],'fontunits','normalized', 'fontSize', 0.07);
+        gPPI_E2_lst = uicontrol(gPPI_GUI , 'Style', 'listbox', 'String', LST_2,'Max', 100,'Units', 'normalized', 'Position',[0.045 0.135 0.900 0.300],'fontunits','normalized', 'fontSize', 0.07,'Value', [],'callback', @action_select_2);
 
-        gPPI_OK = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'OK','Units', 'normalized','Position',[0.045 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
-        gPPI_REV = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Remove selected','Units', 'normalized','Position',[0.360 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
-        gPPI_REVA = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Remove all','Units', 'normalized','Position',[0.680 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32);
-
-        % Assignig actions of buttons of GUI 
-        set(gPPI_E1_lst, 'Value', []);
-        set(gPPI_E1_lst, 'callback', @action_select_1)
-        set(gPPI_E2_lst, 'Value', []);
-        set(gPPI_E2_lst, 'callback', @action_select_2)
-
-        set(gPPI_ADD, 'callback', @action_3)
-        set(gPPI_ADA, 'callback', @action_4)
-        set(gPPI_HELP, 'callback', @gPPI_H);
-
-        set(gPPI_OK, 'callback', @action_5)
-        set(gPPI_REV, 'callback', @action_6)
-        set(gPPI_REVA, 'callback', @action_7)
-
+        gPPI_OK = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'OK','Units', 'normalized','Position',[0.045 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @action_5);
+        gPPI_REV = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Remove selected','Units', 'normalized','Position',[0.360 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @action_6);
+        gPPI_REVA = uicontrol(gPPI_GUI,'Style','pushbutton','String', 'Remove all','Units', 'normalized','Position',[0.680 0.05 0.270 0.065],'fontunits','normalized', 'fontSize', 0.32,'callback', @action_7);
         movegui(gPPI_GUI,'center');
 
         %% Function to reuturn user's selection 
@@ -177,7 +162,7 @@ end
            else
 
 
-                      cond = struct;
+               cond = struct;
                ctr = 1;
                for kgb = 1:length(all_cond_copy)
                    for fsb = 1:length(LST_2)
@@ -250,14 +235,13 @@ end
             % Creation of GUI window for Help description
             gPPI_H_W = figure('Name', 'gPPI: Help', 'NumberTitle', 'off', 'Units', 'normalized', 'Position', [0.67 0.31 0.22 0.50],'MenuBar', 'none','ToolBar', 'none','color','w','Resize','off', 'WindowStyle', 'Modal');
 
-            Data_1 = {'Suppose you have two separate sessions.','','Both sessions contains task regressors for', '“Cond A”, “Cond B” and “Errors”', '','If you are only interested in “Cond A” and “Cond B” comparison, the following conditions should be selected:',...
+            Data_1 = {'Suppose you have two separate sessions.','','Both sessions contains task regressors for', '"Cond A", "Cond B" and "Errors"', '','If you are only interested in "Cond A" and "Cond B" comparison, the following conditions should be selected:',...
             '','1)  Cond A (Sess1)','2)  Cond B (Sess1)','3)  Cond A (Sess2)','4)  Cond B (Sess2)','','For all selected conditions of interest, the TMFC toolbox will create psycho-physiological (PPI) regressors. Thus, for each condition of interest, the generalized PPI (gPPI) model will contain two regressors: (1) psychological regressor and (2) PPI regressor.'...
-            '','For trials of no interest (here, “Errors”), the gPPI model will contain only the psychological regressor.'};
+            '','For trials of no interest (here, "Errors"), the gPPI model will contain only the psychological regressor.'};
 
             gPPI_W1 = uicontrol(gPPI_H_W,'Style','text','String',Data_1 ,'Units', 'normalized', 'Position', [0.05 0.12 0.89 0.85], 'HorizontalAlignment', 'left','backgroundcolor','w','fontunits','normalized', 'fontSize', 0.0301);
-            gPPI_H_OK = uicontrol(gPPI_H_W,'Style','pushbutton','String', 'OK','Units', 'normalized', 'Position', [0.34 0.06 0.30 0.06]);%,'fontunits','normalized', 'fontSize', 0.35
+            gPPI_H_OK = uicontrol(gPPI_H_W,'Style','pushbutton','String', 'OK','Units', 'normalized', 'Position', [0.34 0.06 0.30 0.06],'callback', @gPPI_H_close);%,'fontunits','normalized', 'fontSize', 0.35
 
-            set(gPPI_H_OK, 'callback', @gPPI_H_close);
             movegui(gPPI_H_W,'center');
 
             function gPPI_H_close(~,~)

@@ -105,8 +105,8 @@ switch tmfc.defaults.parallel
             parpool
         end
         w = waitbar(0,'Please wait...','Name','VOI time-series extraction','Tag','tmfc_waitbar');
-        D = parallel.pool.DataQueue;            % Creation of parallel pool 
-        afterEach(D, @tmfc_parfor_waitbar);     % Command to update waitbar
+        %D = parallel.pool.DataQueue;            % Creation of parallel pool 
+        %afterEach(D, @tmfc_parfor_waitbar);     % Command to update waitbar
         tmfc_parfor_waitbar(w,N);     
         cleanupObj = onCleanup(@cleanMeUp);
 
@@ -137,11 +137,11 @@ for i = start_sub:N
     clear matlabbatch
     SPM = load(tmfc.subjects(i).path);
 
-    if isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]))
+    if isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]))
         rmdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]),'s');
     end
 
-    if ~isfolder(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]))
+    if ~isdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]))
         mkdir(fullfile(tmfc.project_path,'ROI_sets',tmfc.ROI_set(ROI_set_number).set_name,'VOIs',['Subject_' num2str(i,'%04.f')]));
     end
     
@@ -216,8 +216,8 @@ function cleanMeUp()
         set([GUI.TMFC_GUI_B1, GUI.TMFC_GUI_B2, GUI.TMFC_GUI_B3, GUI.TMFC_GUI_B4,...
             GUI.TMFC_GUI_B5a, GUI.TMFC_GUI_B5b, GUI.TMFC_GUI_B6, GUI.TMFC_GUI_B7,...
             GUI.TMFC_GUI_B8, GUI.TMFC_GUI_B9, GUI.TMFC_GUI_B10, GUI.TMFC_GUI_B11,...
-            GUI.TMFC_GUI_B12,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,GUI.TMFC_GUI_B14a...
-            GUI.TMFC_GUI_B14b], 'Enable', 'on');
+            GUI.TMFC_GUI_B12a,GUI.TMFC_GUI_B12b,GUI.TMFC_GUI_B13a,GUI.TMFC_GUI_B13b,...
+            GUI.TMFC_GUI_B14a,GUI.TMFC_GUI_B14b], 'Enable', 'on');
         delete(findall(0,'type', 'Figure','Tag', 'tmfc_waitbar'));
     end
     try                                                                 
